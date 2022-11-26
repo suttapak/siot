@@ -21,6 +21,8 @@ services:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: postgres
       POSTGRES_DB: example
+    volumes:
+      - ./docker/data:/var/lib/postgresql/data
 
   adminer:
     container_name: adminer

@@ -8,4 +8,5 @@ import (
 
 type CanPubRepository interface {
 	Create(ctx context.Context, canPubs string, boxId uuid.UUID) (canPub *model.CanPublish, err error)
+	CanPub(ctx context.Context, boxId uuid.UUID) (canPub *model.CanPublish, err error)
 }

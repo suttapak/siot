@@ -37,3 +37,13 @@ func (b *boxRepository) FindBox(ctx context.Context, boxId, userId uuid.UUID) (b
 		Where("id = ? AND owner_id = ?", boxId, userId).First(&box).Error
 	return box, err
 }
+
+func (b *boxRepository) FindBoxBySecret(ctx context.Context, boxId uuid.UUID, secret string) (box *model.Box, err error) {
+	err = b.db.WithContext(ctx).Preload(clause.Associations).Where(model.Box{ID: boxId, BoxSecret: model.BoxSecret{Secret: secret}}).First(&box).Error
+	return box, err
+}
+
+func (b *boxRepository) FindBoxById(ctx context.Context, boxId uuid.UUID) (box *model.Box, err error) {
+	err = b.db.WithContext(ctx).Where("id = ?", boxId).Preload(clause.Associations).First(&box).Error
+	return box, err
+}
