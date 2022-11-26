@@ -1,0 +1,16 @@
+app:
+  port: 4000
+
+pg:
+  username: 'postgres'
+  password: 'example'
+  host: '127.0.0.1'
+  port: 5432
+  db: 'example'
+
+jwt:
+  ttl: 32
+  secret: 'suttapkamatee'
+
+bcrypt:
+  salt: 11

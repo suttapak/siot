@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: iegomez/mosquitto-go-auth
+    volumes:
+      - ./mosquitto/mosquitto.conf:/etc/mosquitto/mosquitto.conf
+      - ./mosquitto/conf.d:/mosquitto/conf.d
+
+    ports:
+      - 1883:1883
+
+  db:
+    image: postgres
+    restart: always
+    container_name: db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: postgres
+      POSTGRES_DB: example
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

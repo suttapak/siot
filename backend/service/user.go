@@ -1,0 +1,58 @@
+package service
+
+import (
+	"context"
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type UserService interface {
+	FindUser(ctx context.Context, req *FindUserRequest) (res *FindUserResponse, err error)
+}
+
+type FindUserRequest struct {
+	UserId uuid.UUID
+}
+
+type FindUserResponse struct {
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Email     string    `json:"email"`
+	SettingId uint      `json:"settingId"`
+	Roles     []struct {
+		ID              int       `json:"id"`
+		CreatedAt       time.Time `json:"createdAt"`
+		UpdatedAt       time.Time `json:"updatedAt"`
+		Name            string    `json:"name"`
+		PermissionState int       `json:"permissionState"`
+		DisplayName     string    `json:"displayName"`
+		Description     string    `json:"description"`
+	} `json:"roles"`
+	Box []struct {
+		ID          uuid.UUID `json:"id"`
+		CreatedAt   time.Time `json:"createdAt"`
+		UpdatedAt   time.Time `json:"updatedAt"`
+		Name        string    `json:"name"`
+		Description string    `json:"description"`
+		OwnerId     uuid.UUID `json:"ownerId"`
+	} `json:"box"`
+	Setting struct {
+		ID           uint      `json:"id"`
+		CreatedAt    time.Time `json:"createdAt"`
+		UpdatedAt    time.Time `json:"updatedAt"`
+		UserId       uuid.UUID `json:"userId"`
+		Notification struct {
+			ID        uint      `json:"id"`
+			CreatedAt time.Time `json:"createdAt"`
+			UpdatedAt time.Time `json:"updatedAt"`
+			// attbute
+			NotificationState bool `json:"notificationState"`
+			// fk
+			SettingId uint `json:"settingId"`
+		} `json:"notification"`
+	} `json:"setting"`
+}
