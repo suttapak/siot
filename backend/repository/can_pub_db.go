@@ -20,3 +20,8 @@ func (c *canPubRepository) Create(ctx context.Context, canPubs string, boxId uui
 	err = c.db.WithContext(ctx).Create(&canPub).Error
 	return canPub, err
 }
+
+func (c *canPubRepository) CanPub(ctx context.Context, boxId uuid.UUID) (canPub *model.CanPublish, err error) {
+	err = c.db.WithContext(ctx).Where("box_id = ? ", boxId).First(&canPub).Error
+	return canPub, err
+}

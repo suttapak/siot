@@ -8,4 +8,5 @@ import (
 
 type CanSubRepository interface {
 	Create(ctx context.Context, canSub string, boxId uuid.UUID) (conSub *model.CanSubscribe, err error)
+	CanSub(ctx context.Context, boxId uuid.UUID) (canSub *model.CanSubscribe, err error)
 }

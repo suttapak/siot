@@ -23,3 +23,8 @@ func (r *canSubRepository) Create(ctx context.Context, canSubs string, boxId uui
 	err = r.db.WithContext(ctx).Create(&canSub).Error
 	return canSub, err
 }
+
+func (r *canSubRepository) CanSub(ctx context.Context, boxId uuid.UUID) (canSub *model.CanSubscribe, err error) {
+	err = r.db.WithContext(ctx).Where("box_id = ?", boxId).First(&canSub).Error
+	return canSub, err
+}
