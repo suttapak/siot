@@ -44,3 +44,18 @@ func (h *mqttHandler) ACLCheck(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, body)
 }
+
+func (h *mqttHandler) Admin(ctx *gin.Context) {
+	body := service.MqttAdminRequest{}
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	err := h.mqttServ.Admin(ctx, &body)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, body)
+}

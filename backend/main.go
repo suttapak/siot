@@ -41,7 +41,7 @@ func main() {
 	boxMemberServ := service.NewBoxMemberService(userRepo, boxMemRepo)
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
 	displayServ := service.NewDisplayService(boxRepo, displayRepo, layoutRepo, widgetDisplayRepo)
-	mqttServ := service.NewMqttAuthService(boxRepo, canSubRepo, canPubRepo)
+	mqttServ := service.NewMqttAuthService(boxRepo, canSubRepo, canPubRepo, userRepo)
 	userServ := service.NewUserService(userRepo)
 	widgetCtServ := service.NewWidgetControlService(widgetControlRepo)
 	widgetDpServ := service.NewWidgetDisplayService(widgetDisplayRepo)
@@ -82,7 +82,7 @@ func main() {
 	boxGroup.GET("/:boxId", boxHandler.FindBox)
 
 	// box member
-	boxMemberGroup := r.Group("boxes/:boxId/members")
+	boxMemberGroup := r.Group("boxes/:boxId/members", jwtWare.JWTWare)
 	{
 		boxMemberGroup.GET("", boxMemberHandler.BoxMembers)
 		boxMemberGroup.POST("", boxMemberHandler.AddMember)
@@ -102,6 +102,7 @@ func main() {
 	{
 		mqttGroup.POST("/auth", mqttHandler.Auth)
 		mqttGroup.POST("/acl", mqttHandler.ACLCheck)
+		mqttGroup.POST("/admin", mqttHandler.Admin)
 	}
 
 	// user group

@@ -3,22 +3,24 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
+	"strings"
+
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils/errs"
 	"github.com/suttapak/siot-backend/utils/logs"
+	"github.com/suttapak/siot-backend/utils/role"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type mqttAuthService struct {
 	boxRepo    repository.BoxRepository
 	canSubRepo repository.CanSubRepository
 	canPubRepo repository.CanPubRepository
+	userRepo   repository.UserRepository
 }
 
-func NewMqttAuthService(boxRepo repository.BoxRepository, canSubRepo repository.CanSubRepository, canPubRepo repository.CanPubRepository) MqttAuthService {
-	return &mqttAuthService{boxRepo, canSubRepo, canPubRepo}
+func NewMqttAuthService(boxRepo repository.BoxRepository, canSubRepo repository.CanSubRepository, canPubRepo repository.CanPubRepository, userRepo repository.UserRepository) MqttAuthService {
+	return &mqttAuthService{boxRepo, canSubRepo, canPubRepo, userRepo}
 }
 
 func (s *mqttAuthService) Auth(ctx context.Context, req *MqttAuthRequest) error {
@@ -51,29 +53,23 @@ func (s *mqttAuthService) ACLCheckI(ctx context.Context, req *MqttACLRequest) er
 		   	subscribe  = 4
 	*/
 
-	fmt.Println(req)
-
 	switch req.Acc {
 	case 1:
 		if !s.canSub(ctx, req) {
 			return errs.ErrUnauthorized
 		}
-		break
 	case 2:
 		if !s.canPub(ctx, req) {
 			return errs.ErrUnauthorized
 		}
-		break
 	case 3:
-		if !s.canPub(ctx, req) || !s.canPub(ctx, req) {
+		if !s.canPub(ctx, req) || !s.canSub(ctx, req) {
 			return errs.ErrUnauthorized
 		}
-		break
 	case 4:
 		if !s.canSub(ctx, req) {
 			return errs.ErrUnauthorized
 		}
-		break
 	default:
 		return errs.ErrBadRequest
 	}
@@ -86,7 +82,6 @@ func (s *mqttAuthService) canSub(ctx context.Context, req *MqttACLRequest) bool 
 	if err != nil {
 		return false
 	}
-	fmt.Println(s.getTopic(req), canSub.CanSubscribe)
 	return s.getTopic(req) == canSub.CanSubscribe
 
 }
@@ -96,7 +91,6 @@ func (s *mqttAuthService) canPub(ctx context.Context, req *MqttACLRequest) bool 
 	if err != nil {
 		return false
 	}
-	fmt.Println(s.getTopic(req), canPub.CanPublish)
 
 	return s.getTopic(req) == canPub.CanPublish
 
@@ -105,4 +99,22 @@ func (s *mqttAuthService) canPub(ctx context.Context, req *MqttACLRequest) bool 
 func (s *mqttAuthService) getTopic(req *MqttACLRequest) string {
 	topic := strings.SplitN(req.Topic, "/", 2)
 	return topic[0]
+}
+
+func (s *mqttAuthService) Admin(ctx context.Context, req *MqttAdminRequest) error {
+	u, err := s.userRepo.FindByEmail(ctx, req.Email)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrUnauthorized
+	}
+	if !u.PasswordIsCorrect(req.Password) {
+		logs.Error(err)
+		return errs.ErrUnauthorized
+	}
+	for _, r := range u.Roles {
+		if r.ID == role.SuperAdmin {
+			return nil
+		}
+	}
+	return errs.ErrUnauthorized
 }
