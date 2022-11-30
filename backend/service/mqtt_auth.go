@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 )
 
@@ -17,8 +18,8 @@ type MqttAuthRequest struct {
 }
 
 type MqttAdminRequest struct {
-	Email    string `json:"username" binding:"required"`
-	Password string `json:"password"`
+	UserId   uuid.UUID `json:"username" binding:"required"`
+	Password string    `json:"password"`
 }
 
 type MqttACLRequest struct {

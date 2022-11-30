@@ -28,7 +28,15 @@ func (s *mqttAuthService) Auth(ctx context.Context, req *MqttAuthRequest) error 
 	if err != nil {
 		logs.Error(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errs.ErrNotFound
+			u, err := s.userRepo.FindById(ctx, req.BoxId)
+			if err != nil {
+
+				return errs.ErrUnauthorized
+			}
+			if !u.PasswordIsCorrect(req.Secret) {
+				return errs.ErrUnauthorized
+			}
+			return nil
 		}
 		return errs.ErrInternalServerError
 	}
@@ -37,6 +45,12 @@ func (s *mqttAuthService) Auth(ctx context.Context, req *MqttAuthRequest) error 
 
 func (s *mqttAuthService) ACLCheckI(ctx context.Context, req *MqttACLRequest) error {
 	//
+	u, _ := s.userRepo.FindById(ctx, req.BoxId)
+	for _, r := range u.Roles {
+		if r.ID == role.SuperAdmin {
+			return nil
+		}
+	}
 	_, err := s.boxRepo.FindBoxById(ctx, req.BoxId)
 	if err != nil {
 		logs.Error(err)
@@ -102,12 +116,8 @@ func (s *mqttAuthService) getTopic(req *MqttACLRequest) string {
 }
 
 func (s *mqttAuthService) Admin(ctx context.Context, req *MqttAdminRequest) error {
-	u, err := s.userRepo.FindByEmail(ctx, req.Email)
+	u, err := s.userRepo.FindById(ctx, req.UserId)
 	if err != nil {
-		logs.Error(err)
-		return errs.ErrUnauthorized
-	}
-	if !u.PasswordIsCorrect(req.Password) {
 		logs.Error(err)
 		return errs.ErrUnauthorized
 	}
@@ -116,5 +126,6 @@ func (s *mqttAuthService) Admin(ctx context.Context, req *MqttAdminRequest) erro
 			return nil
 		}
 	}
-	return errs.ErrUnauthorized
+	logs.Error("is not addmin")
+	return errs.ErrNotFound
 }
