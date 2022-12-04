@@ -24,20 +24,27 @@ func NewMqttAuthService(boxRepo repository.BoxRepository, canSubRepo repository.
 }
 
 func (s *mqttAuthService) Auth(ctx context.Context, req *MqttAuthRequest) error {
-	_, err := s.boxRepo.FindBoxBySecret(ctx, req.BoxId, req.Secret)
+	_, err := s.boxRepo.FindBoxBySecret(ctx, req.Id, req.Secret)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			_, err = s.userRepo.FindById(ctx, req.Id)
+			if err == nil {
+				return nil
+			}
+			logs.Error(err)
+			return errs.ErrUnauthorized
+		}
 		logs.Error(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return errs.ErrNotFound
 		}
 		return errs.ErrInternalServerError
 	}
-	return err
+	return nil
 }
 
 func (s *mqttAuthService) ACLCheckI(ctx context.Context, req *MqttACLRequest) error {
-	//
-	_, err := s.boxRepo.FindBoxById(ctx, req.BoxId)
+	_, err := s.boxRepo.FindBoxById(ctx, req.Id)
 	if err != nil {
 		logs.Error(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -77,8 +84,22 @@ func (s *mqttAuthService) ACLCheckI(ctx context.Context, req *MqttACLRequest) er
 	return err
 }
 
+func (s *mqttAuthService) Admin(ctx context.Context, req *MqttAdminRequest) error {
+	u, err := s.userRepo.FindById(ctx, req.UserId)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrUnauthorized
+	}
+	for _, r := range u.Roles {
+		if r.ID == role.SuperAdmin {
+			return nil
+		}
+	}
+	return errs.ErrUnauthorized
+}
+
 func (s *mqttAuthService) canSub(ctx context.Context, req *MqttACLRequest) bool {
-	canSub, err := s.canSubRepo.CanSub(ctx, req.BoxId)
+	canSub, err := s.canSubRepo.CanSub(ctx, req.Id)
 	if err != nil {
 		return false
 	}
@@ -87,7 +108,7 @@ func (s *mqttAuthService) canSub(ctx context.Context, req *MqttACLRequest) bool 
 }
 
 func (s *mqttAuthService) canPub(ctx context.Context, req *MqttACLRequest) bool {
-	canPub, err := s.canPubRepo.CanPub(ctx, req.BoxId)
+	canPub, err := s.canPubRepo.CanPub(ctx, req.Id)
 	if err != nil {
 		return false
 	}
@@ -99,22 +120,4 @@ func (s *mqttAuthService) canPub(ctx context.Context, req *MqttACLRequest) bool 
 func (s *mqttAuthService) getTopic(req *MqttACLRequest) string {
 	topic := strings.SplitN(req.Topic, "/", 2)
 	return topic[0]
-}
-
-func (s *mqttAuthService) Admin(ctx context.Context, req *MqttAdminRequest) error {
-	u, err := s.userRepo.FindByEmail(ctx, req.Email)
-	if err != nil {
-		logs.Error(err)
-		return errs.ErrUnauthorized
-	}
-	if !u.PasswordIsCorrect(req.Password) {
-		logs.Error(err)
-		return errs.ErrUnauthorized
-	}
-	for _, r := range u.Roles {
-		if r.ID == role.SuperAdmin {
-			return nil
-		}
-	}
-	return errs.ErrUnauthorized
 }

@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	socketio "github.com/googollee/go-socket.io"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/db"
+	"github.com/suttapak/siot-backend/external"
 	"github.com/suttapak/siot-backend/handler"
 	"github.com/suttapak/siot-backend/middleware"
 	"github.com/suttapak/siot-backend/repository"
@@ -17,6 +20,7 @@ func main() {
 	conf := config.Default()
 
 	conn := db.GetPostgresInstance(conf, true)
+
 	// repository
 	boxMemRepo := repository.NewBoxMemberRepository(conn)
 	boxRepo := repository.NewBoxRepository(conn)
@@ -24,6 +28,8 @@ func main() {
 	canSubRepo := repository.NewCanSubRepository(conn)
 	canPubRepo := repository.NewCanPubRepository(conn)
 	controlRepo := repository.NewControlRepository(conn)
+	controlDataRepo := repository.NewControlDataRepository(conn)
+	_ = controlDataRepo
 	displayRepo := repository.NewDisplayRepository(conn)
 	layoutRepo := repository.NewLayoutRepository(conn)
 	userRepo := repository.NewUserRepositoryDB(conn)
@@ -122,6 +128,40 @@ func main() {
 	widgetCtGroup.GET("/:widgetId", widgetCtHandler.Widget)
 	widgetCtGroup.POST("", widgetCtHandler.Create)
 
+	mqtt := external.NewMqttClient(conf)
+	server := socketio.NewServer(nil)
+	wsServ := service.NewWsService(mqtt, boxRepo, controlRepo, displayRepo)
+	wsHandler := handler.NewWsHandler(wsServ, server)
+
+	displayDataRepo := repository.NewDisplayDataRepositoryDb(conn)
+
+	mqttMachine := external.NewMQTTMachine(mqtt, canSubRepo, controlRepo, controlDataRepo, displayRepo, displayDataRepo)
+	go mqttMachine.MQTTMachine()
+
+	server.OnConnect("/", func(s socketio.Conn) error {
+		s.SetContext("")
+		log.Println("connected:", s.ID())
+		return nil
+	})
+
+	server.OnEvent("", "subscript", wsHandler.Subscript)
+	server.OnEvent("", "publish", wsHandler.Publish)
+	server.OnError("/", func(s socketio.Conn, e error) {
+		log.Println("meet error:", e)
+	})
+
+	server.OnDisconnect("/", func(s socketio.Conn, reason string) {
+		log.Println("closed", reason)
+	})
+	go func() {
+		if err := server.Serve(); err != nil {
+			log.Fatalf("socketio listen error: %s\n", err)
+		}
+	}()
+	defer server.Close()
+
+	r.GET("/socket.io/*any", gin.WrapH(server))
+	r.POST("/socket.io/*any", gin.WrapH(server))
 	// run server
 	err := r.Run(fmt.Sprintf(":%v", conf.App.Port))
 	if err != nil {
@@ -129,8 +169,3 @@ func main() {
 	}
 
 }
-
-// TODO create control service : create find all
-// TODO create display service : create find all
-
-// TODO create widget control adn display

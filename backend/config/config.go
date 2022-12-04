@@ -27,6 +27,13 @@ type Configs struct {
 	App struct {
 		Port int `yaml:"port"`
 	} `yaml:"app"`
+
+	Mqtt struct {
+		Port     int    `yaml:"port"`
+		Broker   string `yaml:"broker"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	}
 }
 
 func Default() *Configs {

@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -40,5 +42,10 @@ func (r *displayRepository) FindDisplays(ctx context.Context, req *FindDisplaysR
 
 	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("box_id = ? ", req.BoxId).Find(&display).Error
 
+	return display, err
+}
+
+func (r *displayRepository) FindDisplaysByKey(ctx context.Context, boxId uuid.UUID, key string) (display []model.Display, err error) {
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Find(&display).Error
 	return display, err
 }

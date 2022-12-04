@@ -14,3 +14,9 @@ jwt:
 
 bcrypt:
   salt: 11
+
+mqtt:
+  port: 1883
+  broker: "127.0.0.1"
+  username: "fd3782ff-a373-4146-8534-b85f78a78aa7"
+  password: "spider09"

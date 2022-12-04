@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -37,5 +38,10 @@ func (r *controlRepository) FindControl(ctx context.Context, req *FindControlReq
 }
 func (r *controlRepository) FindControls(ctx context.Context, req *FindControlsRequest) (control []model.Control, err error) {
 	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("box_id = ?", req.BoxId).Find(&control).Error
+	return control, err
+}
+
+func (r *controlRepository) FindControlsByKey(ctx context.Context, boxId uuid.UUID, key string) (control []model.Control, err error) {
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Find(&control).Error
 	return control, err
 }
