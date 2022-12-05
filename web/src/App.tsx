@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import BoxPage from './pages/BoxPage';
 import BoxSecret from './pages/BoxSecretPage';
 import BoxMemberPage from './pages/BoxMemberPage';
+import TestPage from './pages/TestPage';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,14 @@ function App() {
                   element={
                     <RequireAuth>
                       <BoxPage />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path='/testpage'
+                  element={
+                    <RequireAuth>
+                      <TestPage />
                     </RequireAuth>
                   }
                 />
