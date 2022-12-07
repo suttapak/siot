@@ -24,3 +24,7 @@ func (r *displayDataDb) Crate(ctx context.Context, dId uint, data float64, label
 	err = r.db.WithContext(ctx).Create(&c).Error
 	return c, err
 }
+func (r *displayDataDb) FindByDisplayId(ctx context.Context, dId uint) (d []model.DisplayData, err error) {
+	err = r.db.WithContext(ctx).Where("display_id = ?", dId).Limit(20).Order("id desc").Find(&d).Error
+	return d, err
+}

@@ -40,7 +40,9 @@ func (r *displayRepository) FindDisplay(ctx context.Context, req *FindDisplayReq
 }
 func (r *displayRepository) FindDisplays(ctx context.Context, req *FindDisplaysRequest) (display []model.Display, err error) {
 
-	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("box_id = ? ", req.BoxId).Find(&display).Error
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("box_id = ? ", req.BoxId).Preload("DisplayData", func(tx *gorm.DB) *gorm.DB {
+		return tx.Order("id desc")
+	}).Find(&display).Error
 
 	return display, err
 }

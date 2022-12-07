@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import BoxPage from './pages/BoxPage';
 import BoxSecret from './pages/BoxSecretPage';
 import BoxMemberPage from './pages/BoxMemberPage';
+import { ProviderSokcetIO } from './hooks/useSocketIO';
 
 const queryClient = new QueryClient();
 
@@ -18,66 +19,68 @@ function App() {
       <ProviderAuth>
         <ProviderToast>
           <QueryClientProvider client={queryClient}>
-            <Container>
-              <Routes>
-                <Route
-                  path='/'
-                  element={
-                    <RequireAuth>
-                      <HomePage />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path='/boxes/:boxId'
-                  element={
-                    <RequireAuth>
-                      <BoxPage />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path='/boxes/:boxId/dashboard'
-                  element={
-                    <RequireAuth>
-                      <BoxDashBoard />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path='/boxes/:boxId/secret'
-                  element={
-                    <RequireAuth>
-                      <BoxSecret />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path='/boxes/:boxId/members'
-                  element={
-                    <RequireAuth>
-                      <BoxMemberPage />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path='signin'
-                  element={
-                    <NotAuth>
-                      <SignIn />
-                    </NotAuth>
-                  }
-                />
-                <Route
-                  path='signup'
-                  element={
-                    <NotAuth>
-                      <SignUp />
-                    </NotAuth>
-                  }
-                />
-              </Routes>
-            </Container>
+            <ProviderSokcetIO>
+              <Container>
+                <Routes>
+                  <Route
+                    path='/'
+                    element={
+                      <RequireAuth>
+                        <HomePage />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='/boxes/:boxId'
+                    element={
+                      <RequireAuth>
+                        <BoxPage />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='/boxes/:boxId/dashboard'
+                    element={
+                      <RequireAuth>
+                        <BoxDashBoard />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='/boxes/:boxId/secret'
+                    element={
+                      <RequireAuth>
+                        <BoxSecret />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='/boxes/:boxId/members'
+                    element={
+                      <RequireAuth>
+                        <BoxMemberPage />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='signin'
+                    element={
+                      <NotAuth>
+                        <SignIn />
+                      </NotAuth>
+                    }
+                  />
+                  <Route
+                    path='signup'
+                    element={
+                      <NotAuth>
+                        <SignUp />
+                      </NotAuth>
+                    }
+                  />
+                </Routes>
+              </Container>
+            </ProviderSokcetIO>
           </QueryClientProvider>
         </ProviderToast>
       </ProviderAuth>

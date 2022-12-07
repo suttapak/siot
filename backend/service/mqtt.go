@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
@@ -17,45 +16,14 @@ type WsService interface {
 type SubscriptMessageResponse struct {
 	CanSub string `json:"canSub"`
 	Data   struct {
-		Control []struct {
-			ID          uint      `json:"id" `
-			CreatedAt   time.Time `json:"createdAt"`
-			UpdatedAt   time.Time `json:"updatedAt" `
-			Name        string    `json:"name" `
-			Key         string    `json:"key" `
-			Description string    `json:"description" `
-			BoxId       uuid.UUID `json:"boxId" `
-			ControlData []struct {
-				ID        uint      `json:"id" `
-				CreatedAt time.Time `json:"createdAt" `
-				UpdatedAt time.Time `json:"updatedAt" `
-				Data      float64   `json:"data"`
-				Label     string    `json:"label"`
-				ControlId uint      `json:"controlId" `
-			} `json:"controlData"`
-		} `json:"control"`
-		Display []struct {
-			ID          uint      `json:"id"`
-			CreatedAt   time.Time `json:"createdAt"`
-			UpdatedAt   time.Time `json:"updatedAt"`
-			Name        string    `json:"name"`
-			Key         string    `json:"key"`
-			Description string    `json:"description"`
-			BoxId       uuid.UUID `json:"boxId"`
-			DisplayData []struct {
-				ID        uint      `json:"id"`
-				CreatedAt time.Time `json:"createdAt"`
-				UpdatedAt time.Time `json:"updatedAt"`
-				Data      float64   `json:"data"`
-				Label     string    `json:"label"`
-				ControlId uint      `json:"controlId"`
-			} `json:"controlData"`
-		} `json:"display"`
+		Control []ControlResponse `json:"control"`
+		Display []DisplayResponse `json:"display"`
 	} `json:"data"`
 }
 
 type SubscriptMessageRequest struct {
 	BoxId uuid.UUID `json:"boxId"`
+	Key   string    `json:"key"`
 }
 
 type PublishMessageRequest struct {

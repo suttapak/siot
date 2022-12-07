@@ -109,7 +109,6 @@ func (s *displayService) FindDisplay(ctx context.Context, req *FindDisplaysReque
 	displays, err := s.displayRepo.FindDisplays(ctx, &repository.FindDisplaysRequest{
 		BoxId: req.BoxId,
 	})
-
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError

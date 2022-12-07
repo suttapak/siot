@@ -1,8 +1,10 @@
 import React from 'react';
+import { CtxPubType } from '../types/CtxPub.type';
 import { Control } from './control';
 import Display from './display';
 
 type Props = {
+  canSub: string;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setWidgetId: React.Dispatch<React.SetStateAction<number>>;
@@ -29,7 +31,11 @@ export const WedgitBar = (props: Props) => {
             </button>
           </div>
           <div className='w-full flex justify-center'>
-            {modeControl ? <Control setWidgetId={props.setWidgetId} widgetMode={true} /> : <Display setWidgetId={props.setWidgetId} widgetMode />}
+            {modeControl ? (
+              <Control canSub={props.canSub} setWidgetId={props.setWidgetId} widgetMode={true} />
+            ) : (
+              <Display canSub={props.canSub} setWidgetId={props.setWidgetId} widgetMode />
+            )}
           </div>
         </div>
       </div>

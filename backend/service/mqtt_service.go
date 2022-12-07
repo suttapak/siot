@@ -6,11 +6,9 @@ import (
 	"fmt"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/suttapak/siot-backend/external"
 	"github.com/suttapak/siot-backend/repository"
-	"github.com/suttapak/siot-backend/utils"
 	"github.com/suttapak/siot-backend/utils/logs"
 )
 
@@ -30,23 +28,12 @@ func NewWsService(mqtt mqtt.Client, boxRepo repository.BoxRepository,
 }
 
 func (s *wsService) RunSub(ctx context.Context, c socketio.Conn, sv *socketio.Server, req SubscriptMessageRequest) {
-	b, err := s.boxRepo.FindBoxById(ctx, req.BoxId)
+	_, err := s.boxRepo.FindBoxById(ctx, req.BoxId)
 	if err != nil {
 		logs.Error(err)
 		return
 	}
-	res := s.getData(ctx, req.BoxId, b.CanSub.CanSubscribe)
-	c.Join(b.CanSub.CanSubscribe)
-	sv.BroadcastToRoom("", b.CanSub.CanSubscribe, b.CanSub.CanSubscribe, res.Data)
-
-	t := s.mqtt.Subscribe(fmt.Sprintf("%v/#", b.CanSub.CanSubscribe), 1, func(client mqtt.Client, message mqtt.Message) {
-		res := s.getData(ctx, req.BoxId, b.CanSub.CanSubscribe)
-		sv.BroadcastToRoom("", b.CanSub.CanSubscribe, b.CanSub.CanSubscribe, res.Data)
-	})
-
-	if t.Error() != nil {
-		logs.Error(t.Error())
-	}
+	c.Join(req.Key)
 }
 
 func (s *wsService) RunPub(ctx context.Context, req PublishMessageRequest) {
@@ -70,24 +57,4 @@ func (s *wsService) RunPub(ctx context.Context, req PublishMessageRequest) {
 		return
 	}
 
-}
-
-func (s *wsService) getData(ctx context.Context, boxId uuid.UUID, canSub string) *SubscriptMessageResponse {
-	control, err := s.controlRepo.FindControls(ctx, &repository.FindControlsRequest{BoxId: boxId})
-	if err != nil {
-		logs.Error(err)
-		return nil
-	}
-	display, err := s.displayRepo.FindDisplays(ctx, &repository.FindDisplaysRequest{BoxId: boxId})
-	if err != nil {
-		logs.Error(err)
-		return nil
-	}
-	temp := MockSubMsgRes{CanSub: canSub, Data: Data{control, display}}
-	res, err := utils.Recast[SubscriptMessageResponse](temp)
-	if err != nil {
-		logs.Error(err)
-		return nil
-	}
-	return &res
 }

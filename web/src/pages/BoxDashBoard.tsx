@@ -25,6 +25,7 @@ export function BoxDashBoard() {
   const { boxId } = useParams();
 
   const { data: box } = useQuery(['box'], async () => await FindBox(String(boxId)));
+
   const { data: controls } = useQuery(['controls'], async () => await getControls(String(boxId)));
   const { data: displays } = useQuery(['displays'], async () => await GetDisplays(String(boxId)));
 
@@ -70,7 +71,16 @@ export function BoxDashBoard() {
   return (
     <React.Fragment>
       <BoxContainer>
-        {modeEdit && <WedgitBar setWidgetId={setWidgetId} modeControl={controlMode} setModeControl={setControlMode} open={modeEdit} setOpen={setModeEdit} />}
+        {modeEdit && (
+          <WedgitBar
+            canSub={'' + box?.canSub.canSubscribe}
+            setWidgetId={setWidgetId}
+            modeControl={controlMode}
+            setModeControl={setControlMode}
+            open={modeEdit}
+            setOpen={setModeEdit}
+          />
+        )}
         <div className='px-16 lg:px-56 pr-3  w-full '>
           {/* title  */}
           <div className='w-full h-8 px-6 flex items-center bg-white mt-2 py-5 rounded-lg mb-4 '>
@@ -92,6 +102,7 @@ export function BoxDashBoard() {
               </button>
             </div>
           </div>
+
           <ResponsiveGridLayout
             rowHeight={100}
             onDrop={onDrop}
@@ -110,7 +121,9 @@ export function BoxDashBoard() {
               return (
                 <div key={value.layout.id.toString()} className='w-full'>
                   {controlComponent.map((V, i) => (
-                    <React.Fragment key={i}>{value.widget.name.toLowerCase() === V.name.toLowerCase() && <V widget={value} />}</React.Fragment>
+                    <React.Fragment key={i}>
+                      {value.widget.name.toLowerCase() === V.name.toLowerCase() && <V canSub={'' + box?.canSub.canSubscribe} widget={value} />}
+                    </React.Fragment>
                   ))}
                 </div>
               );
@@ -119,7 +132,9 @@ export function BoxDashBoard() {
               return (
                 <div key={value.layout.id.toString()}>
                   {displayComponent.map((V, i) => (
-                    <React.Fragment key={i}>{value.widget.name.toLowerCase() === V.name.toLowerCase() && <V widget={value} />}</React.Fragment>
+                    <React.Fragment key={i}>
+                      {value.widget.name.toLowerCase() === V.name.toLowerCase() && <V canSub={'' + box?.canSub.canSubscribe} widget={value} />}
+                    </React.Fragment>
                   ))}
                 </div>
               );
