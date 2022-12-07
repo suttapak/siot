@@ -29,16 +29,13 @@ func main() {
 	canPubRepo := repository.NewCanPubRepository(conn)
 	controlRepo := repository.NewControlRepository(conn)
 	controlDataRepo := repository.NewControlDataRepository(conn)
-	_ = controlDataRepo
 	displayRepo := repository.NewDisplayRepository(conn)
+	displayDataRepo := repository.NewDisplayDataRepositoryDb(conn)
 	layoutRepo := repository.NewLayoutRepository(conn)
 	userRepo := repository.NewUserRepositoryDB(conn)
 	settingRepo := repository.NewSettingRepository(conn)
-	roleRepo := repository.NewRoleRepository(conn)
 	widgetControlRepo := repository.NewWidgetControlRepository(conn)
 	widgetDisplayRepo := repository.NewWidgetDisplayRepository(conn)
-
-	_ = roleRepo
 
 	// service || use-case
 
@@ -85,10 +82,8 @@ func main() {
 
 	// box member
 	boxMemberGroup := r.Group("boxes/:boxId/members", jwtWare.JWTWare)
-	{
-		boxMemberGroup.GET("", boxMemberHandler.BoxMembers)
-		boxMemberGroup.POST("", boxMemberHandler.AddMember)
-	}
+	boxMemberGroup.GET("", boxMemberHandler.BoxMembers)
+	boxMemberGroup.POST("", boxMemberHandler.AddMember)
 
 	// control
 	controlGroup := r.Group("boxes/:boxId/controls", jwtWare.JWTWare)
@@ -101,11 +96,9 @@ func main() {
 	displayGroup.GET("", displayHandler.FindDisplays)
 
 	mqttGroup := r.Group("mqtt")
-	{
-		mqttGroup.POST("/auth", mqttHandler.Auth)
-		mqttGroup.POST("/acl", mqttHandler.ACLCheck)
-		mqttGroup.POST("/admin", mqttHandler.Admin)
-	}
+	mqttGroup.POST("/auth", mqttHandler.Auth)
+	mqttGroup.POST("/acl", mqttHandler.ACLCheck)
+	mqttGroup.POST("/admin", mqttHandler.Admin)
 
 	// user group
 	userGroup := r.Group("user")
@@ -128,15 +121,11 @@ func main() {
 	server := socketio.NewServer(nil)
 	wsServ := service.NewWsService(mqtt, boxRepo, controlRepo, displayRepo)
 	wsHandler := handler.NewWsHandler(wsServ, server)
-
-	displayDataRepo := repository.NewDisplayDataRepositoryDb(conn)
-
 	mqttMachine := external.NewMQTTMachine(mqtt, server, canSubRepo, controlRepo, controlDataRepo, displayRepo, displayDataRepo)
 	go mqttMachine.MQTTMachine()
 
 	server.OnConnect("/", func(s socketio.Conn) error {
 		s.SetContext("")
-		log.Println("connected:", s.ID())
 		return nil
 	})
 

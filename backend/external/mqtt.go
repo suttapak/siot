@@ -6,7 +6,6 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/gofrs/uuid"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/model"
 	"github.com/suttapak/siot-backend/utils/logs"
@@ -68,16 +67,6 @@ type ControlResponse struct {
 	Data      float64   `json:"data"`
 	Label     string    `json:"label"`
 	ControlId uint      `json:"controlId"`
-}
-
-type SubscriptMessageRequest struct {
-	BoxId uuid.UUID `json:"boxId"`
-}
-
-type PublishMessageRequest struct {
-	Data  float64   `json:"data"`
-	Key   string    `json:"key"`
-	BoxId uuid.UUID `json:"boxId"`
 }
 
 type Data struct {

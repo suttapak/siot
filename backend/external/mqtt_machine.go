@@ -131,10 +131,6 @@ func (m *mqttMachine) MQTTMachine() {
 			logs.Error(t.Error())
 		}
 
-		if t.Wait() {
-			logs.Info("wait")
-
-		}
 	}()
 }
 
