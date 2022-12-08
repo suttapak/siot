@@ -9,6 +9,7 @@ import (
 
 type DisplayRepository interface {
 	Create(ctx context.Context, req *CreateDisplayRequest) (control *model.Display, err error)
+	FindDisplayByBoxId(ctx context.Context, bId uuid.UUID, dId uint) (c *model.Display, err error)
 	FindDisplay(ctx context.Context, req *FindDisplayRequest) (control *model.Display, err error)
 	FindDisplays(ctx context.Context, req *FindDisplaysRequest) (control []model.Display, err error)
 	FindDisplaysByKey(ctx context.Context, boxId uuid.UUID, key string) (control []model.Display, err error)

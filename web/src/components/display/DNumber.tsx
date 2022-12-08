@@ -1,4 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { useParams } from 'react-router-dom';
+import { GetDisplayData } from '../../delivery/DisplayData';
 import { useSocketIO } from '../../hooks/useSocketIO';
 import { DataDisplay } from '../../types/Data';
 import { DisplayType } from '../../types/Display';
@@ -23,8 +26,16 @@ const DNumber = (props: Props) => {
     },
   ];
 
+  const { boxId } = useParams();
+
   const { canSub, widget } = props;
-  const [state, setState] = React.useState(widget?.displayData.length! > 0 ? widget?.displayData.sort((a, b) => a.id - b.id)! : mock);
+  const [state, setState] = React.useState<DataDisplay[]>([]);
+
+  const { isLoading } = useQuery([widget?.key], async () => await GetDisplayData({ boxId: String(boxId), displayId: widget?.id! }), {
+    onSuccess(data) {
+      setState(data);
+    },
+  });
 
   const { client } = useSocketIO();
 
@@ -47,7 +58,13 @@ const DNumber = (props: Props) => {
   client.on(canSub + '/' + widget?.key, (data: { displayData: DataDisplay[] }) => {
     setState(data.displayData);
   });
-
+  if (isLoading) {
+    return (
+      <div role='status' className={`${props.widgetMode && 'cursor-move'} w-full h-24 shadow rounded-lg flex justify-center items-center `}>
+        <div className='w-full dark:bg-gray-700 rounded-lg mb-4'></div>
+      </div>
+    );
+  }
   return (
     <div
       onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 2) : null)}
@@ -55,7 +72,7 @@ const DNumber = (props: Props) => {
       draggable={props.widgetMode}
     >
       <div className={`${props.widgetMode && 'cursor-move'} w-20 h-10 transition-all duration-150 rounded-lg`}>
-        <p className='text-2xl text-center'>{state[state.length - 1].data}</p>{' '}
+        <p className='text-2xl text-center'>{state.length > 0 ? state[state.length - 1].data : 'NULL'}</p>{' '}
       </div>
     </div>
   );

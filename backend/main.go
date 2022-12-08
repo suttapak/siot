@@ -43,6 +43,7 @@ func main() {
 	boxServ := service.NewBoxService(conf, boxRepo, boxMemRepo, boxSecretRepo, canSubRepo, canPubRepo)
 	boxMemberServ := service.NewBoxMemberService(userRepo, boxMemRepo)
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
+	displayDataServ := service.NewDisplayDataService(displayRepo, displayDataRepo)
 	displayServ := service.NewDisplayService(boxRepo, displayRepo, layoutRepo, widgetDisplayRepo)
 	mqttServ := service.NewMqttAuthService(boxRepo, canSubRepo, canPubRepo, userRepo)
 	userServ := service.NewUserService(userRepo)
@@ -54,6 +55,7 @@ func main() {
 	boxHandler := handler.NewBoxHandler(boxServ)
 	boxMemberHandler := handler.NewBoxMemberHandler(boxMemberServ)
 	controlHandler := handler.NewControlHandler(controlServ)
+	displayDataHandler := handler.NewDisplayDataHandler(displayDataServ)
 	displayHandler := handler.NewDisplayHandler(displayServ)
 	mqttHandler := handler.NewMqttHandler(mqttServ)
 	userHandler := handler.NewUserHandler(userServ)
@@ -89,8 +91,11 @@ func main() {
 	controlGroup := r.Group("boxes/:boxId/controls", jwtWare.JWTWare)
 	controlGroup.POST("", controlHandler.Create)
 	controlGroup.GET("", controlHandler.FindControls)
-	// display
+	// display data
+	displayDataGroup := r.Group("boxes/:boxId/displays/:displayId/data", jwtWare.JWTWare)
+	displayDataGroup.GET("", displayDataHandler.Displays)
 
+	// display
 	displayGroup := r.Group("boxes/:boxId/displays", jwtWare.JWTWare)
 	displayGroup.POST("", displayHandler.Create)
 	displayGroup.GET("", displayHandler.FindDisplays)

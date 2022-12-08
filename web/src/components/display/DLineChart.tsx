@@ -3,6 +3,9 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { DisplayType } from '../../types/Display';
 import { DataDisplay } from '../../types/Data';
 import { useSocketIO } from '../../hooks/useSocketIO';
+import { useQuery } from '@tanstack/react-query';
+import { GetDisplayData } from '../../delivery/DisplayData';
+import { useParams } from 'react-router-dom';
 
 type Props = {
   canSub: string;
@@ -49,8 +52,14 @@ const mockData: DataDisplay[] = [
 
 const DLineChart = (props: Props) => {
   const { canSub, widget } = props;
-  const [state, setState] = React.useState(widget?.displayData.length! > 0 ? widget?.displayData! : mockData);
+  const [state, setState] = React.useState<DataDisplay[]>([]);
+  const { boxId } = useParams();
 
+  const { isLoading } = useQuery([widget?.key], async () => await GetDisplayData({ boxId: String(boxId), displayId: widget?.id! }), {
+    onSuccess(data) {
+      setState(data);
+    },
+  });
   const { client } = useSocketIO();
 
   React.useEffect(() => {

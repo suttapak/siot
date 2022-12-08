@@ -4,6 +4,9 @@ import { DisplayType } from '../../types/Display';
 import 'react-circular-progressbar/dist/styles.css';
 import { DataControl, DataDisplay } from '../../types/Data';
 import { useSocketIO } from '../../hooks/useSocketIO';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { GetDisplayData } from '../../delivery/DisplayData';
 
 type Props = {
   canSub: string;
@@ -25,8 +28,14 @@ const DCircularPercent = (props: Props) => {
   ];
 
   const { canSub, widget } = props;
-  const [state, setState] = React.useState(widget?.displayData.length! > 0 ? widget?.displayData.sort((a, b) => a.id - b.id)! : mock);
+  const { boxId } = useParams();
+  const [state, setState] = React.useState<DataDisplay[]>([]);
 
+  const { isLoading } = useQuery([widget?.key], async () => await GetDisplayData({ boxId: String(boxId), displayId: widget?.id! }), {
+    onSuccess(data) {
+      setState(data);
+    },
+  });
   const { client } = useSocketIO();
 
   React.useEffect(() => {
@@ -55,8 +64,8 @@ const DCircularPercent = (props: Props) => {
       draggable={props.widgetMode}
     >
       <CircularProgressbar
-        value={state[state.length - 1].data % 100}
-        text={`${(state[state.length - 1].data % 100).toFixed(2)}%`}
+        value={state.length > 0 ? state[state.length - 1].data % 100 : 0}
+        text={state.length > 0 ? `${(state[state.length - 1].data % 100).toFixed(2)}%` : 'NULL'}
         circleRatio={0.75}
         styles={buildStyles({
           rotation: 1 / 2 + 1 / 8,
