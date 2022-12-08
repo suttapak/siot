@@ -1,5 +1,5 @@
-import React, { useMemo, useRef } from 'react';
-import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import React, { useRef } from 'react';
+import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { DisplayType } from '../../types/Display';
 import { DataDisplay } from '../../types/Data';
 import { useSocketIO } from '../../hooks/useSocketIO';
@@ -64,18 +64,21 @@ const DLineChart = (props: Props) => {
 
   React.useEffect(() => {
     setState(widget?.displayData.length! > 0 ? widget?.displayData! : mockData);
+    // eslint-disable-next-line
   }, [widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [canSub, widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [client.connected]);
 
   client.on(canSub + '/' + widget?.key, (data: { displayData: DataDisplay[] }) => {
@@ -88,6 +91,10 @@ const DLineChart = (props: Props) => {
   React.useEffect(() => {
     setWidth(refWidth.current?.clientWidth ? refWidth.current?.clientWidth : 300);
   }, [refWidth]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div

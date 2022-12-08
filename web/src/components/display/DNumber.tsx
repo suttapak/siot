@@ -41,18 +41,21 @@ const DNumber = (props: Props) => {
 
   React.useEffect(() => {
     setState(widget?.displayData.length! > 0 ? widget?.displayData! : mock);
+    // eslint-disable-next-line
   }, [widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [canSub, widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [client.connected]);
 
   client.on(canSub + '/' + widget?.key, (data: { displayData: DataDisplay[] }) => {

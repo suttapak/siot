@@ -18,8 +18,6 @@ function LinkItem({ path, children, active, setActive }: ItemProps): JSX.Element
   return (
     <Link
       onClick={() => {
-        console.log(path);
-
         setActive(path);
       }}
       to={path}
@@ -37,6 +35,7 @@ export const MenuBar = (props: Props) => {
 
   React.useEffect(() => {
     setActive(path.pathname);
+    // eslint-disable-next-line
   }, []);
 
   const [active, setActive] = React.useState('');

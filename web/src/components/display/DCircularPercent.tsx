@@ -2,7 +2,7 @@ import React from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { DisplayType } from '../../types/Display';
 import 'react-circular-progressbar/dist/styles.css';
-import { DataControl, DataDisplay } from '../../types/Data';
+import { DataDisplay } from '../../types/Data';
 import { useSocketIO } from '../../hooks/useSocketIO';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -40,23 +40,30 @@ const DCircularPercent = (props: Props) => {
 
   React.useEffect(() => {
     setState(widget?.displayData.length! > 0 ? widget?.displayData! : mock);
+    // eslint-disable-next-line
   }, [widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [canSub, widget]);
 
   React.useEffect(() => {
     if (widget) {
       client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
     }
+    // eslint-disable-next-line
   }, [client.connected]);
 
   client.on(canSub + '/' + widget?.key, (data: { displayData: DataDisplay[] }) => {
     setState(data.displayData);
   });
+
+  if (isLoading) {
+    return null;
+  }
   return (
     <div
       onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 3) : null)}

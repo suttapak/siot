@@ -21,6 +21,7 @@ export const CButtonNumber = (props: Props) => {
 
   React.useEffect(() => {
     client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
+    // eslint-disable-next-line
   }, [canSub, widget]);
 
   const onPubMsg = (ctx: CtxPubType | null) => {
