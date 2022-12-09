@@ -14,13 +14,14 @@ import (
 )
 
 type authService struct {
+	avatarRepo  repository.AvatarRepository
 	userRepo    repository.UserRepository
 	conf        *config.Configs
 	settingRepo repository.SettingRepository
 }
 
-func NewAuthService(userRepo repository.UserRepository, conf *config.Configs, settingRepository repository.SettingRepository) AuthService {
-	return &authService{userRepo, conf, settingRepository}
+func NewAuthService(avatarRepo repository.AvatarRepository, userRepo repository.UserRepository, conf *config.Configs, settingRepository repository.SettingRepository) AuthService {
+	return &authService{avatarRepo, userRepo, conf, settingRepository}
 }
 
 func (s *authService) Login(ctx context.Context, req *LoginRequest) (res *LoginRespose, err error) {
@@ -60,23 +61,33 @@ func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *
 	u, err := s.userRepo.FindByEmail(ctx, req.Email)
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			logs.Error(err)
 			return nil, errs.ErrInternalServerError
 		}
 	}
 	if u.EmailIsExist() {
+		logs.Error(err)
 		return nil, errs.ErrUnauthorized
 	}
 	u, err = s.userRepo.Create(ctx, req.Email, req.Password, req.FirstName, req.LastName)
 	if err != nil {
+		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	_, err = s.userRepo.SetRoleBasic(ctx, u.ID)
 	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	_, err = s.avatarRepo.Create(ctx, repository.CreateAvatarRequest{UId: u.ID})
+	if err != nil {
+		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	// TODO : create setting user
 	_, err = s.settingRepo.Create(ctx, u.ID)
 	if err != nil {
+		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	// TODO : change to custom claims

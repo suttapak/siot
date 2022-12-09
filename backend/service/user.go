@@ -23,7 +23,15 @@ type FindUserResponse struct {
 	LastName  string    `json:"lastName"`
 	Email     string    `json:"email"`
 	SettingId uint      `json:"settingId"`
-	Roles     []struct {
+	Avatar    struct {
+		ID        int       `json:"id"`
+		CreatedAt time.Time `json:"createdAt"`
+		UpdatedAt time.Time `json:"updatedAt"`
+		Title     string    `json:"title"`
+		Url       string    `json:"url"`
+		UserId    uuid.UUID `json:"userId"`
+	} `json:"avatar"`
+	Roles []struct {
 		ID              int       `json:"id"`
 		CreatedAt       time.Time `json:"createdAt"`
 		UpdatedAt       time.Time `json:"updatedAt"`

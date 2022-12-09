@@ -53,10 +53,7 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
           </div>
           {auth.user && (
             <div className='w-9 h-9 rounded-full pointer-events-none overflow-hidden flex justify-center items-center bg-blue-300'>
-              <h1 className='font-base text-bases p-1'>
-                {auth.user?.firstName[0].toUpperCase()}
-                {auth.user?.lastName[0].toUpperCase()}
-              </h1>
+              <img src={process.env.REACT_APP_SERVER_URL + auth.user.avatar.url.substring(1)} alt={auth.user.avatar.title} />
             </div>
           )}
         </div>

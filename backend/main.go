@@ -22,6 +22,7 @@ func main() {
 	conn := db.GetPostgresInstance(conf, true)
 
 	// repository
+	avatarRepo := repository.NewAvatarRepository(conn)
 	boxMemRepo := repository.NewBoxMemberRepository(conn)
 	boxRepo := repository.NewBoxRepository(conn)
 	boxSecretRepo := repository.NewBoxSecretRepository(conn)
@@ -39,7 +40,7 @@ func main() {
 
 	// service || use-case
 
-	authServ := service.NewAuthService(userRepo, conf, settingRepo)
+	authServ := service.NewAuthService(avatarRepo, userRepo, conf, settingRepo)
 	boxServ := service.NewBoxService(conf, boxRepo, boxMemRepo, boxSecretRepo, canSubRepo, canPubRepo)
 	boxMemberServ := service.NewBoxMemberService(userRepo, boxMemRepo)
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
@@ -121,6 +122,9 @@ func main() {
 	widgetCtGroup.GET("", widgetCtHandler.Widgets)
 	widgetCtGroup.GET("/:widgetId", widgetCtHandler.Widget)
 	widgetCtGroup.POST("", widgetCtHandler.Create)
+
+	// -----
+	r.Static("/asset", "./public/asset")
 
 	mqtt := external.NewMqttClient(conf)
 	server := socketio.NewServer(nil)

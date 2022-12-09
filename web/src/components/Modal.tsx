@@ -36,7 +36,7 @@ export function Modal({ children, open, setOpen }: ModalProps) {
           </div>
         </div>
       </div>
-      <div onClick={() => setOpen(false)} className={`${open ? 'block' : 'hidden'} bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-30`}></div>
+      <div onClick={() => setOpen(false)} className={`${open ? 'block' : 'hidden'} bg-gray-900 bg-opacity-20 dark:bg-opacity-80 fixed inset-0 z-30`}></div>
     </>
   );
 }

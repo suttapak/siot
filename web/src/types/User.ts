@@ -1,3 +1,4 @@
+import { AvatarType } from './Avatar';
 import { Role } from './Role';
 import { Setting } from './Setting';
 
@@ -12,6 +13,7 @@ export interface User {
   roles: Role[];
   box: any[];
   setting: Setting;
+  avatar: AvatarType;
 }
 
 export interface UserAccessBox {

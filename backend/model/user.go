@@ -20,6 +20,7 @@ type User struct {
 	LastName  string `json:"lastName"`
 	Email     string `gorm:"index:unique" json:"email"`
 	Password  string `json:"password"`
+	Avatar    Avatar `json:"avatar" gorm:"foreignKey:UserId"`
 	// fk
 	SettingId uint `json:"settingId"`
 	// relation

@@ -8,6 +8,7 @@ import { BoxCard } from '../components/BoxCard';
 import { BsPlusLg } from 'react-icons/bs';
 import { Modal } from '../components/Modal';
 import { CreateBoxComponent } from '../form/Box';
+import BoxPopupDetail from '../components/BoxPopupDetail';
 
 export function HomePage() {
   const { error, data } = useQuery<Box[], { message: string }>(['boxes'], FindBoxes);
@@ -17,6 +18,7 @@ export function HomePage() {
   if (error) toast.addMessage(error.message);
 
   const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
 
   return (
     <>
@@ -30,17 +32,18 @@ export function HomePage() {
             </div>
           </button>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 '>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 '>
           {data?.map((v) => {
             return (
-              <Link key={v.id} to={`/boxes/${v.id}`}>
+              <React.Fragment key={v.id}>
                 <BoxCard box={v} />
-              </Link>
+              </React.Fragment>
             );
           })}
         </div>
       </div>
       {/* modal */}
+
       <Modal open={open} setOpen={setOpen}>
         <CreateBoxComponent setOpen={setOpen} />
       </Modal>
