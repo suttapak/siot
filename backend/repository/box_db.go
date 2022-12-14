@@ -47,3 +47,17 @@ func (b *boxRepository) FindBoxById(ctx context.Context, boxId uuid.UUID) (box *
 	err = b.db.WithContext(ctx).Where("id = ?", boxId).Preload(clause.Associations).First(&box).Error
 	return box, err
 }
+
+func (b *boxRepository) UpdateBox(ctx context.Context, req UpdateBoxRequest) (box *model.Box, err error) {
+	box = &model.Box{
+		Name:        req.Name,
+		Description: req.Description,
+	}
+	err = b.db.WithContext(ctx).Updates(&box).Error
+	return box, err
+}
+
+func (b *boxRepository) DeleteBox(ctx context.Context, bId uuid.UUID) error {
+	err := b.db.WithContext(ctx).Delete(&model.Box{}, bId).Error
+	return err
+}

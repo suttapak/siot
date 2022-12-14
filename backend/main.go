@@ -88,6 +88,8 @@ func main() {
 	boxGroup.POST("", boxHandler.Create)
 	boxGroup.GET("", boxHandler.FindBoxes)
 	boxGroup.GET("/:boxId", boxHandler.FindBox)
+	boxGroup.PUT("/:boxId", boxHandler.Update)
+	boxGroup.DELETE("/:boxId", boxHandler.Delete)
 
 	// box member
 	boxMemberGroup := r.Group("boxes/:boxId/members", jwtWare.JWTWare)
