@@ -7,6 +7,7 @@ import { MdSpaceDashboard } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
 import { AiOutlineLogin, AiOutlineLogout } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
+import Menu from './Menu';
 
 interface ItemProps {
   path: string;
@@ -38,6 +39,8 @@ interface NavbarComponentProps {
 export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
   const auth = useAuth();
 
+  const [openMenu, setOpenMenu] = React.useState(false);
+
   return (
     <React.Fragment>
       {/* <!-- drawer init and show --> */}
@@ -52,12 +55,23 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
             </Link>
           </div>
           {auth.user && (
-            <div className='w-9 h-9 rounded-full pointer-events-none overflow-hidden flex justify-center items-center bg-blue-300'>
-              <h1 className='font-base text-bases p-1'>
-                {auth.user?.firstName[0].toUpperCase()}
-                {auth.user?.lastName[0].toUpperCase()}
-              </h1>
-            </div>
+            <React.Fragment>
+              <Menu setOpen={setOpenMenu} open={openMenu}>
+                <li className='px-3 w-full py-2  text-base hover:bg-gray-200'>
+                  <Link onClick={() => setOpenMenu(false)} to={`/profile/${auth.user.id}`}>
+                    Profile
+                  </Link>
+                </li>
+              </Menu>
+              <div className='z-20 w-9 h-9   flex justify-center items-cente'>
+                <img
+                  className='cursor-pointer rounded-full w-full h-full overflow-hidden'
+                  onClick={() => setOpenMenu(!openMenu)}
+                  src={process.env.REACT_APP_SERVER_URL + auth.user.avatar.url.substring(1)}
+                  alt={auth.user.avatar.title}
+                />
+              </div>
+            </React.Fragment>
           )}
         </div>
       </div>

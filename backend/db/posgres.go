@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/driver/postgres"
@@ -30,6 +31,7 @@ func GetPostgresInstance(cfg *config.Configs, migrate bool) *gorm.DB {
 	// if migrate {
 	if db.AutoMigrate(
 		&model.User{},
+		&model.Avatar{},
 		&model.UserSetting{},
 		&model.Role{},
 		&model.CanPublish{},

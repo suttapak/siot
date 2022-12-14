@@ -29,13 +29,22 @@ const DCircularPercent = (props: Props) => {
 
   const { canSub, widget } = props;
   const { boxId } = useParams();
-  const [state, setState] = React.useState<DataDisplay[]>([]);
+  const [state, setState] = React.useState<DataDisplay[] | undefined>([]);
 
-  const { isLoading } = useQuery([widget?.key], async () => await GetDisplayData({ boxId: String(boxId), displayId: widget?.id! }), {
-    onSuccess(data) {
-      setState(data);
+  const { isLoading } = useQuery(
+    [widget?.key ? widget?.key : 'displayData'],
+    async () => {
+      if (!widget?.id) {
+        return;
+      }
+      return await GetDisplayData({ boxId: String(boxId), displayId: widget?.id });
     },
-  });
+    {
+      onSuccess(data) {
+        setState(data);
+      },
+    }
+  );
   const { client } = useSocketIO();
 
   React.useEffect(() => {
@@ -61,8 +70,12 @@ const DCircularPercent = (props: Props) => {
     setState(data.displayData);
   });
 
-  if (isLoading) {
-    return null;
+  if (isLoading || !state) {
+    return (
+      <div role='status' className={`${props.widgetMode && 'cursor-move'} w-full h-24 shadow rounded-lg flex justify-center items-center `}>
+        <div className='w-full dark:bg-gray-700 rounded-lg mb-4'></div>
+      </div>
+    );
   }
   return (
     <div

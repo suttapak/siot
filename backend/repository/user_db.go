@@ -26,6 +26,7 @@ func (r *userDb) Create(ctx context.Context, email, password, firstName, lastNam
 		LastName:  lastName,
 	}
 	err = r.db.WithContext(ctx).Create(&u).Error
+
 	return u, err
 }
 
@@ -35,7 +36,7 @@ func (r *userDb) FindByEmail(ctx context.Context, email string) (u *model.User, 
 }
 
 func (r *userDb) FindById(ctx context.Context, userId uuid.UUID) (u *model.User, err error) {
-	err = r.db.WithContext(ctx).Preload(clause.Associations).Preload("Setting.Notification").Where(model.User{ID: userId}).First(&u).Error
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Preload("Setting.Notification").Where("id = ?", userId).First(&u).Error
 	return u, err
 }
 
