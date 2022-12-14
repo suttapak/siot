@@ -43,6 +43,12 @@ const useProviderAuth: () => authContextInterface = () => {
     return await register(body);
   };
 
+  const reUser = async () => {
+    const u = await getUser();
+    setUser(u);
+    return u;
+  };
+
   const signin = async (body: LoginDto) => {
     const res = await login(body);
     setToken(res);
@@ -57,7 +63,7 @@ const useProviderAuth: () => authContextInterface = () => {
     navigate('/signin', { replace: true });
   };
   const value = React.useMemo(() => {
-    return { signup, signin, signout, user, token, error };
+    return { signup, signin, signout, user, token, error, reUser };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, token, error]);
   return value;

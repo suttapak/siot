@@ -10,6 +10,7 @@ import BoxPage from './pages/BoxPage';
 import BoxSecret from './pages/BoxSecretPage';
 import BoxMemberPage from './pages/BoxMemberPage';
 import { ProviderSokcetIO } from './hooks/useSocketIO';
+import ProfilePage from './pages/ProfilePage';
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,14 @@ function App() {
                     element={
                       <RequireAuth>
                         <HomePage />
+                      </RequireAuth>
+                    }
+                  />
+                  <Route
+                    path='/profile/:userId'
+                    element={
+                      <RequireAuth>
+                        <ProfilePage />
                       </RequireAuth>
                     }
                   />

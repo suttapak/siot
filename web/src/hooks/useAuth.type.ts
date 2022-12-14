@@ -9,4 +9,5 @@ export interface authContextInterface {
   token: AccessToken | null;
   user: User | null;
   error: any;
+  reUser: () => Promise<User>;
 }

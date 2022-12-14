@@ -41,6 +41,7 @@ func main() {
 	// service || use-case
 
 	authServ := service.NewAuthService(avatarRepo, userRepo, conf, settingRepo)
+	avatarServ := service.NewAvatarService(avatarRepo)
 	boxServ := service.NewBoxService(conf, boxRepo, boxMemRepo, boxSecretRepo, canSubRepo, canPubRepo)
 	boxMemberServ := service.NewBoxMemberService(userRepo, boxMemRepo)
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
@@ -53,6 +54,7 @@ func main() {
 
 	// handler
 	authHandler := handler.NewAuthHandler(authServ)
+	avatarHandler := handler.NewAvatarHandler(avatarServ)
 	boxHandler := handler.NewBoxHandler(boxServ)
 	boxMemberHandler := handler.NewBoxMemberHandler(boxMemberServ)
 	controlHandler := handler.NewControlHandler(controlServ)
@@ -76,6 +78,10 @@ func main() {
 	authGroup := r.Group("auth")
 	authGroup.POST("/login", authHandler.Login)
 	authGroup.POST("/register", authHandler.Register)
+	// avatar
+	avatarGroup := r.Group("avatar", jwtWare.JWTWare)
+	avatarGroup.PUT("", avatarHandler.Update)
+
 	// box group
 	boxGroup := r.Group("boxes")
 	boxGroup.Use(jwtWare.JWTWare)

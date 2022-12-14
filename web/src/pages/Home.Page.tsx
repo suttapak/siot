@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import { useToast } from '../hooks/useToast';
 import { Box } from '../types/Box';
 import { FindBoxes } from '../delivery/Box';
@@ -8,7 +7,6 @@ import { BoxCard } from '../components/BoxCard';
 import { BsPlusLg } from 'react-icons/bs';
 import { Modal } from '../components/Modal';
 import { CreateBoxComponent } from '../form/Box';
-import BoxPopupDetail from '../components/BoxPopupDetail';
 
 export function HomePage() {
   const { error, data } = useQuery<Box[], { message: string }>(['boxes'], FindBoxes);
@@ -18,7 +16,6 @@ export function HomePage() {
   if (error) toast.addMessage(error.message);
 
   const [open, setOpen] = React.useState(false);
-  const [openEdit, setOpenEdit] = React.useState(false);
 
   return (
     <>

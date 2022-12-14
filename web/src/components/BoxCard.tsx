@@ -4,9 +4,9 @@ import { Box } from '../types/Box';
 import { HiDotsVertical } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Modal } from './Modal';
-import BoxPopupDetail from './BoxPopupDetail';
 import React from 'react';
 import { UpdateBoxPopupDetail } from '../form/BoxPopupDetail';
+import Menu from './Menu';
 
 export const BoxCard = ({ box }: { box: Box }) => {
   const { data } = useQuery(['user'], async () => await getUserById(box.ownerId));
@@ -16,8 +16,6 @@ export const BoxCard = ({ box }: { box: Box }) => {
 
   return (
     <React.Fragment>
-      <div onClick={() => setOpen(false)} className={`${open ? '' : 'hidden'} z-10 bg-opacity-0 top-0 left-0 w-full h-full  absolute py-5 bg-gray-200 `}></div>
-
       <div className='w-full  h-32 rounded-lg  relative  col-span-1'>
         <div className='w-full px-4 h-24 bg-neutral-700 relative rounded-t-lg'>
           <Link to={`/boxes/${box.id}`} className='hover:underline decoration-gray-50'>
@@ -38,22 +36,22 @@ export const BoxCard = ({ box }: { box: Box }) => {
           >
             <HiDotsVertical className='text-2xl text-gray-50' />
           </div>
-          <div className='w-0 h-0 relative'>
-            <div className={`${open ? '' : 'hidden'} top-0 z-30 absolute py-1.5 min-w-[128px] rounded-lg bg-white border shadow`}>
-              <div
+          <Menu setOpen={setOpen} open={open}>
+            <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>
+              <span
                 onClick={() => {
                   setOpenEdit(true);
                   setOpen(false);
                 }}
                 className='px-3 w-full py-2  text-base hover:bg-gray-200'
               >
-                <span>Edit</span>
-              </div>
-              <div className='px-3 w-full py-2  text-base hover:bg-gray-200'>
-                <span>Details</span>
-              </div>
-            </div>
-          </div>
+                Edit
+              </span>
+            </li>
+            <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>
+              <span className='px-3 w-full py-2  text-base hover:bg-gray-200'>Details</span>
+            </li>
+          </Menu>
         </div>
 
         {/* avatar */}

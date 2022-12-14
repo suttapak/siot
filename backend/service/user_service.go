@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils"
@@ -31,7 +30,6 @@ func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *
 		return nil, errs.ErrInternalServerError
 	}
 	res, err = utils.Recast[*FindUserResponse](user)
-	fmt.Println(res.Avatar)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
