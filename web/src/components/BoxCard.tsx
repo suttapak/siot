@@ -5,14 +5,16 @@ import { HiDotsVertical } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { Modal } from './Modal';
 import React from 'react';
-import { UpdateBoxPopupDetail } from '../form/BoxPopupDetail';
+import { UpdateBoxPopupDetail } from '../form/UpdateBoxForm';
 import Menu from './Menu';
+import { DelBoxDeliver } from '../form/DelBoxForm';
 
 export const BoxCard = ({ box }: { box: Box }) => {
   const { data } = useQuery(['user'], async () => await getUserById(box.ownerId));
 
   const [open, setOpen] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
+  const [openDel, setOpenDel] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -37,19 +39,23 @@ export const BoxCard = ({ box }: { box: Box }) => {
             <HiDotsVertical className='text-2xl text-gray-50' />
           </div>
           <Menu setOpen={setOpen} open={open}>
-            <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>
-              <span
-                onClick={() => {
-                  setOpenEdit(true);
-                  setOpen(false);
-                }}
-                className='px-3 w-full py-2  text-base hover:bg-gray-200'
-              >
-                Edit
-              </span>
+            <li
+              onClick={() => {
+                setOpenEdit(true);
+                setOpen(false);
+              }}
+              className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'
+            >
+              <span className='px-3 w-full py-2  text-base hover:bg-gray-200'>Edit</span>
             </li>
-            <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>
-              <span className='px-3 w-full py-2  text-base hover:bg-gray-200'>Details</span>
+            <li
+              onClick={() => {
+                setOpenDel(true);
+                setOpen(false);
+              }}
+              className='px-3 w-full py-2 cursor-pointer transition-colors  hover:text-gray-50  hover:bg-red-600'
+            >
+              <span className='px-3 w-full py-2 text-base '>Delete</span>
             </li>
           </Menu>
         </div>
@@ -61,8 +67,11 @@ export const BoxCard = ({ box }: { box: Box }) => {
           </div>
         </div>
       </div>
+      <Modal open={openDel} setOpen={setOpenDel}>
+        <DelBoxDeliver box={box} setOpen={setOpenDel} boxId={box.id} />
+      </Modal>
       <Modal open={openEdit} setOpen={setOpenEdit}>
-        <UpdateBoxPopupDetail setOpen={setOpenEdit} />
+        <UpdateBoxPopupDetail box={box} setOpen={setOpenEdit} boxId={box.id} />
       </Modal>
     </React.Fragment>
   );

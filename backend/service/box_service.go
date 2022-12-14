@@ -131,7 +131,7 @@ func (s *boxService) Update(ctx context.Context, uId, bId uuid.UUID, req UpdateB
 		}
 		return nil, errs.ErrInternalServerError
 	}
-	box, err := s.boxRepo.UpdateBox(ctx, repository.UpdateBoxRequest(req))
+	box, err := s.boxRepo.UpdateBox(ctx, repository.UpdateBoxRequest(req), bId)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError

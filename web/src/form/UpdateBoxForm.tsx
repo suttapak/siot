@@ -2,20 +2,25 @@ import React from 'react';
 
 import { BsStack } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
-import { CreateBox, CreateBoxDto } from '../delivery/Box';
+import { UpdateBoxDeliver, UpdateBoxDto } from '../delivery/Box';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ImSpinner9 } from 'react-icons/im';
+import { Box } from '../types/Box';
 
 type Props = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  boxId?: string;
+  box: Box;
 };
 
 export const UpdateBoxPopupDetail: React.FC<Props> = (props: Props) => {
-  const { register, handleSubmit, reset } = useForm<CreateBoxDto>();
+  const { register, handleSubmit, reset } = useForm<UpdateBoxDto>();
+
+  const { boxId, box } = props;
 
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation(CreateBox, {
+  const { mutate, isLoading } = useMutation(async (v: UpdateBoxDto) => await UpdateBoxDeliver(v, boxId), {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['boxes'] });
     },
@@ -43,16 +48,17 @@ export const UpdateBoxPopupDetail: React.FC<Props> = (props: Props) => {
           type='text'
           placeholder='Smart farm'
           id='name'
-          {...register('name', { required: true })}
+          defaultValue={box.name}
+          {...register('name')}
         />
       </div>
       <div className='py-2'>
         <label className='block text-gray-700 text-xs font-bold mb-1'>Description</label>
-        <input
+        <textarea
           className='form-control block w-full px-2 py-1 text-md font-normal text-gray-700 bg-white  border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
-          type='text'
           placeholder='Smart farm at Ubon'
           id='name'
+          defaultValue={box.description}
           {...register('description')}
         />
       </div>

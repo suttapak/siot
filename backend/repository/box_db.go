@@ -28,7 +28,7 @@ func (b *boxRepository) Create(ctx context.Context, name, description string, ow
 }
 func (b *boxRepository) FindAll(ctx context.Context, userId uuid.UUID) (boxes []model.Box, err error) {
 	err = b.db.WithContext(ctx).Preload(clause.Associations).
-		Preload("Members.BoxMemberPermission").Where("owner_id = ?", userId).Find(&boxes).Error
+		Preload("Members.BoxMemberPermission").Where("owner_id = ?", userId).Order("created_at ASC").Find(&boxes).Error
 	return boxes, err
 }
 
@@ -48,8 +48,9 @@ func (b *boxRepository) FindBoxById(ctx context.Context, boxId uuid.UUID) (box *
 	return box, err
 }
 
-func (b *boxRepository) UpdateBox(ctx context.Context, req UpdateBoxRequest) (box *model.Box, err error) {
+func (b *boxRepository) UpdateBox(ctx context.Context, req UpdateBoxRequest, bId uuid.UUID) (box *model.Box, err error) {
 	box = &model.Box{
+		ID:          bId,
 		Name:        req.Name,
 		Description: req.Description,
 	}
