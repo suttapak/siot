@@ -6,6 +6,7 @@ import DLineChart from './DLineChart';
 import DNumber from './DNumber';
 
 interface Props {
+  canSub: string;
   widgetMode?: boolean;
   // optional setWidget ID when drag to new widget
   setWidgetId: React.Dispatch<React.SetStateAction<number>>;
@@ -23,7 +24,7 @@ const Display = (props: Props) => {
           <>
             {displayComponent.map((V, i) => (
               <React.Fragment key={i}>
-                {V.name.toLowerCase() === value.name.toLocaleLowerCase() && <V setWidgetId={props.setWidgetId} widgetMode />}
+                {V.name.toLowerCase() === value.name.toLocaleLowerCase() && <V canSub={props.canSub} setWidgetId={props.setWidgetId} widgetMode />}
               </React.Fragment>
             ))}
           </>

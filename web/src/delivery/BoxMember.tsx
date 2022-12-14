@@ -12,8 +12,6 @@ export const GetBoxMembers = async (boxId: string) => {
 };
 
 export const AddMember = async (boxId: string, body: AddMemberDto) => {
-  console.log(boxId, body);
-
   const res = await apiClient.post<Member>(`boxes/${boxId}/members`, JSON.stringify(body), {
     headers: {
       Authorization: `Bearer ${getUserToken()}`,

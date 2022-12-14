@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/gorm"
@@ -26,5 +27,10 @@ func (r *canSubRepository) Create(ctx context.Context, canSubs string, boxId uui
 
 func (r *canSubRepository) CanSub(ctx context.Context, boxId uuid.UUID) (canSub *model.CanSubscribe, err error) {
 	err = r.db.WithContext(ctx).Where("box_id = ?", boxId).First(&canSub).Error
+	return canSub, err
+}
+
+func (r *canSubRepository) GetCanSubByTopic(ctx context.Context, topic string) (canSub *model.CanSubscribe, err error) {
+	err = r.db.WithContext(ctx).Where("can_subscribe = ?", topic).First(&canSub).Error
 	return canSub, err
 }

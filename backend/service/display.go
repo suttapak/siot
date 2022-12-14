@@ -49,10 +49,8 @@ type DisplayResponse struct {
 		ID        uint      `json:"id"`
 		CreatedAt time.Time `json:"createdAt"`
 		UpdatedAt time.Time `json:"updatedAt"`
-		XNumber   int       `json:"XNumber"`
-		YNumber   int       `json:"YNumber"`
-		XString   string    `json:"XString"`
-		YString   string    `json:"YString"`
+		Data      float64   `json:"data"`
+		Label     string    `json:"label"`
 		DisplayId uint      `json:"displayId"`
 	} ` json:"displayData"`
 	Widget struct {

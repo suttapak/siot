@@ -12,17 +12,16 @@ type MqttAuthService interface {
 }
 
 type MqttAuthRequest struct {
-	BoxId  uuid.UUID `json:"username" binding:"required"`
+	Id     uuid.UUID `json:"username" binding:"required"`
 	Secret string    `json:"password"`
 }
 
 type MqttAdminRequest struct {
-	Email    string `json:"username" binding:"required"`
-	Password string `json:"password"`
+	UserId uuid.UUID `json:"username" binding:"required"`
 }
 
 type MqttACLRequest struct {
 	Acc   int       `json:"acc"`
-	BoxId uuid.UUID `json:"username"`
+	Id    uuid.UUID `json:"username"`
 	Topic string    `json:"topic"`
 }

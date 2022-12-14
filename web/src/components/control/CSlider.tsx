@@ -1,14 +1,33 @@
 import React from 'react';
+import { useSocketIO } from '../../hooks/useSocketIO';
 import { Control } from '../../types/Control';
+import { CtxPubType } from '../../types/CtxPub.type';
+import { DataControl } from '../../types/Data';
 
 type Props = {
+  canSub: string;
   widget?: Control;
   widgetMode?: boolean;
   // optional setWidget ID when drag to new widget
   setWidgetId?: React.Dispatch<React.SetStateAction<number>>;
 };
 export const CSlider = (props: Props) => {
-  const [state, setState] = React.useState<number>(0);
+  const { canSub, widget } = props;
+  const [state, setState] = React.useState(widget?.controlData.length! > 0 ? widget?.controlData[widget?.controlData.length - 1].data! : 0);
+
+  const { client } = useSocketIO();
+
+  React.useEffect(() => {
+    client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
+  }, [canSub, widget]);
+
+  const onPubMsg = (ctx: CtxPubType | null) => {
+    client.emit('publish', ctx);
+  };
+
+  client.on(canSub + '/' + widget?.key, (data: { controlData: DataControl[] }) => {
+    setState(data.controlData[0].data);
+  });
 
   return (
     <div
@@ -16,7 +35,13 @@ export const CSlider = (props: Props) => {
       className={`${props.widgetMode && 'cursor-move w-44'} border bg-white w-full h-24 shadow rounded-lg flex justify-center items-center relative `}
       draggable={props.widgetMode}
     >
-      <input type='range' name='slider' id='slider' value={state} onChange={(e) => setState(e.target.valueAsNumber)} />
+      <input
+        type='range'
+        name='slider'
+        id='slider'
+        value={state}
+        onChange={(e) => onPubMsg(!props.widgetMode ? { boxId: widget?.BoxId!, data: Number(e.target.valueAsNumber), key: widget?.key! } : null)}
+      />
       <p className='absolute bottom-0 text-gray-500 right-0 p-2'>{state}</p>
     </div>
   );

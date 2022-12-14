@@ -6,6 +6,7 @@ import (
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func GetPostgresInstance(cfg *config.Configs, migrate bool) *gorm.DB {
@@ -17,7 +18,9 @@ func GetPostgresInstance(cfg *config.Configs, migrate bool) *gorm.DB {
 		cfg.PG.Port,
 		cfg.PG.DB,
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 
 	if err != nil {
 		fmt.Println(err)

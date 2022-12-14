@@ -1,5 +1,5 @@
 import { Layout } from './Layout';
-import { Data } from './Data';
+import { DataDisplay } from './Data';
 import { Widget } from './Widget';
 
 export interface DisplayType {
@@ -12,7 +12,7 @@ export interface DisplayType {
   BoxId: string;
   layoutId: number;
   widgetId: number;
-  displayData: Data[];
+  displayData: DataDisplay[];
   widget: Widget;
   layout: Layout;
 }

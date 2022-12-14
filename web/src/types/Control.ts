@@ -1,4 +1,4 @@
-import { Data } from './Data';
+import { DataControl } from './Data';
 import { Layout } from './Layout';
 import { Widget } from './Widget';
 
@@ -12,7 +12,7 @@ export interface Control {
   BoxId: string;
   layoutId: number;
   widgetId: number;
-  controlData: Data[];
+  controlData: DataControl[];
   widget: Widget;
   layout: Layout;
 }
