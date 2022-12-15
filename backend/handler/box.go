@@ -76,3 +76,48 @@ func (h *boxHandler) FindBox(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, res)
 }
+
+func (h *boxHandler) Update(ctx *gin.Context) {
+	userId, err := utils.UserId(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	boxId, err := uuid.Parse(ctx.Param("boxId"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	body := service.UpdateBoxRequest{}
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	res, err := h.boxServ.Update(ctx, userId, boxId, body)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *boxHandler) Delete(ctx *gin.Context) {
+	userId, err := utils.UserId(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	boxId, err := uuid.Parse(ctx.Param("boxId"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+
+	err = h.boxServ.Delete(ctx, userId, boxId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, ResponseOk)
+}

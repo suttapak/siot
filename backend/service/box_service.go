@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils"
@@ -119,6 +120,44 @@ func (s *boxService) FindBoxe(ctx context.Context, req *FindBoxRequest) (res *Bo
 		return nil, errs.ErrInternalServerError
 	}
 	return res, err
+}
+
+func (s *boxService) Update(ctx context.Context, uId, bId uuid.UUID, req UpdateBoxRequest) (res *BoxResponse, err error) {
+	_, err = s.boxRepo.FindBox(ctx, bId, uId)
+	if err != nil {
+		logs.Error(err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.ErrUnauthorized
+		}
+		return nil, errs.ErrInternalServerError
+	}
+	box, err := s.boxRepo.UpdateBox(ctx, repository.UpdateBoxRequest(req), bId)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[*BoxResponse](box)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+func (s *boxService) Delete(ctx context.Context, uId, bId uuid.UUID) error {
+	var err error
+	_, err = s.boxRepo.FindBox(ctx, bId, uId)
+	if err != nil {
+		logs.Error(err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errs.ErrUnauthorized
+		}
+		return errs.ErrInternalServerError
+	}
+	err = s.boxRepo.DeleteBox(ctx, bId)
+	if err != nil {
+		return errs.ErrInternalServerError
+	}
+	return err
 }
 
 var letterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")

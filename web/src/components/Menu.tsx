@@ -16,7 +16,7 @@ const Menu = ({ open, children, setOpen, position }: Props) => {
         <div
           className={`${open ? '' : 'hidden'} ${
             position ? (position === 'center' ? 'right-0 translate-x-1/2' : position === 'r' ? 'right-0' : 'left-0') : 'right-0'
-          } top-0 -right-10 z-30 absolute  min-w-[128px] whitespace-nowrap w-auto rounded-md bg-white border shadow `}
+          } top-0 -right-10 z-30 absolute overflow-hidden min-w-[128px] whitespace-nowrap w-auto rounded-md bg-white border shadow `}
         >
           <ul>{children}</ul>
         </div>
