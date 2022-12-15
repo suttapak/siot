@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/model"
 	"gorm.io/gorm"
@@ -39,4 +40,9 @@ func (r *boxMemberRepository) Create(ctx context.Context, token string,
 func (r *boxMemberRepository) BoxMembers(ctx context.Context, boxId uuid.UUID) (boxMember []model.BoxMember, err error) {
 	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("box_id = ?", boxId).Find(&boxMember).Error
 	return boxMember, err
+}
+
+func (r *boxMemberRepository) BoxMember(ctx context.Context, bId, uId uuid.UUID) (b *model.BoxMember, err error) {
+	err = r.db.WithContext(ctx).Where("user_id = ? AND box_id = ?", uId, bId).Preload(clause.Associations).First(&b).Error
+	return b, err
 }
