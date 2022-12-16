@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils"
@@ -45,22 +46,22 @@ func (s *controlService) Create(ctx context.Context, req *CreateControlRequest) 
 	}
 	// TODO check key in box
 	// create layout
-    layoutBodyTemp := repository.CreateLayoutRequest{
-        I: req.Layout.I,
-        X: req.Layout.X,
-        Y:req.Layout.Y,
-        W: widget.Width,
-        H:widget.Height,
-    }
+	layoutBodyTemp := repository.CreateLayoutRequest{
+		I: req.Layout.I,
+		X: req.Layout.X,
+		Y: req.Layout.Y,
+		W: widget.Width,
+		H: widget.Height,
+	}
 
-    layout, err := s.layoutRepo.Create(ctx, &layoutBodyTemp)
+	layout, err := s.layoutRepo.Create(ctx, &layoutBodyTemp)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	controlBody := repository.CreateControlRequest{
 		Name:        req.Name,
-		Key:         req.Key,
+		Key:         strings.ToUpper(req.Key),
 		Description: req.Description,
 		BoxId:       req.BoxId,
 		LayoutId:    layout.ID,
