@@ -6,6 +6,7 @@ import { useSocketIO } from '../../hooks/useSocketIO';
 import { useQuery } from '@tanstack/react-query';
 import { GetDisplayData } from '../../delivery/DisplayData';
 import { useParams } from 'react-router-dom';
+import NameKeyWidget from '../NameKeyWidget';
 
 type Props = {
   canSub: string;
@@ -53,6 +54,8 @@ const mockData: DataDisplay[] = [
 const DLineChart = (props: Props) => {
   const { canSub, widget } = props;
   const [state, setState] = React.useState<DataDisplay[] | undefined>([]);
+  const [open, setOpen] = React.useState(false);
+
   const { boxId } = useParams();
 
   const { isLoading } = useQuery(
@@ -113,14 +116,16 @@ const DLineChart = (props: Props) => {
     <div
       ref={refWidth}
       onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 1) : null)}
-      className={`${props.widgetMode && 'cursor-move  w-44 h-24'} border w-full h-52 shadow rounded-lg flex justify-center items-center relative `}
+      className={`${props.widgetMode && 'cursor-move  w-44 h-24'}  border w-full h-52 shadow rounded-lg flex justify-center items-center relative `}
       draggable={props.widgetMode}
     >
+      <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
+
       <LineChart
         width={props.widgetMode ? 176 : width}
         height={props.widgetMode ? 96 : 208}
         data={state.sort((a, b) => a.id - b.id)}
-        margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
+        margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
       >
         <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey={'label'} />

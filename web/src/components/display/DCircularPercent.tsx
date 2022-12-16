@@ -7,6 +7,7 @@ import { useSocketIO } from '../../hooks/useSocketIO';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { GetDisplayData } from '../../delivery/DisplayData';
+import NameKeyWidget from '../NameKeyWidget';
 
 type Props = {
   canSub: string;
@@ -30,6 +31,7 @@ const DCircularPercent = (props: Props) => {
   const { canSub, widget } = props;
   const { boxId } = useParams();
   const [state, setState] = React.useState<DataDisplay[] | undefined>([]);
+  const [open, setOpen] = React.useState(false);
 
   const { isLoading } = useQuery(
     [widget?.key ? widget?.key : 'displayData'],
@@ -80,9 +82,11 @@ const DCircularPercent = (props: Props) => {
   return (
     <div
       onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 3) : null)}
-      className={`${props.widgetMode && 'cursor-move w-44'} w-full h-52 shadow rounded-lg p-3 flex flex-col justify-center items-center `}
+      className={`${props.widgetMode && 'cursor-move w-44'} relative w-full h-52 shadow rounded-lg p-3 flex flex-col justify-center items-center `}
       draggable={props.widgetMode}
     >
+      <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
+
       <CircularProgressbar
         value={state.length > 0 ? state[state.length - 1].data % 100 : 0}
         text={state.length > 0 ? `${(state[state.length - 1].data % 100).toFixed(2)}%` : 'NULL'}
