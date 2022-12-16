@@ -3,6 +3,7 @@ import { useSocketIO } from '../../hooks/useSocketIO';
 import { Control } from '../../types/Control';
 import { CtxPubType } from '../../types/CtxPub.type';
 import { DataControl } from '../../types/Data';
+import NameKeyWidget from '../NameKeyWidget';
 
 type Props = {
   canSub: string;
@@ -14,6 +15,7 @@ type Props = {
 export const CSlider = (props: Props) => {
   const { canSub, widget } = props;
   const [state, setState] = React.useState(widget?.controlData.length! > 0 ? widget?.controlData[widget?.controlData.length - 1].data! : 0);
+  const [open, setOpen] = React.useState(false);
 
   const { client } = useSocketIO();
 
@@ -35,6 +37,7 @@ export const CSlider = (props: Props) => {
       className={`${props.widgetMode && 'cursor-move w-44'} border bg-white w-full h-24 shadow rounded-lg flex justify-center items-center relative `}
       draggable={props.widgetMode}
     >
+      <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
       <input
         type='range'
         name='slider'

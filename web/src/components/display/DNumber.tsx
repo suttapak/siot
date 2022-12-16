@@ -5,6 +5,7 @@ import { GetDisplayData } from '../../delivery/DisplayData';
 import { useSocketIO } from '../../hooks/useSocketIO';
 import { DataDisplay } from '../../types/Data';
 import { DisplayType } from '../../types/Display';
+import NameKeyWidget from '../NameKeyWidget';
 
 type Props = {
   canSub: string;
@@ -30,6 +31,7 @@ const DNumber = (props: Props) => {
 
   const { canSub, widget } = props;
   const [state, setState] = React.useState<DataDisplay[] | undefined>([]);
+  const [open, setOpen] = React.useState(false);
 
   const { isLoading } = useQuery(
     [widget?.key ? widget?.key : 'displayData'],
@@ -80,9 +82,11 @@ const DNumber = (props: Props) => {
   return (
     <div
       onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 2) : null)}
-      className={`${props.widgetMode && 'cursor-move'} w-full h-24 shadow rounded-lg flex justify-center items-center `}
+      className={`${props.widgetMode && 'cursor-move'} relative w-full h-24 shadow rounded-lg flex justify-center items-center `}
       draggable={props.widgetMode}
     >
+      <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
+
       <div className={`${props.widgetMode && 'cursor-move'} w-20 h-10 transition-all duration-150 rounded-lg`}>
         <p className='text-2xl text-center'>{state.length > 0 ? state[state.length - 1].data : 'NULL'}</p>{' '}
       </div>

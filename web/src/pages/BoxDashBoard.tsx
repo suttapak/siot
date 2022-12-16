@@ -7,9 +7,6 @@ import { WedgitBar } from '../components/WedgitBar';
 import { FindBox } from '../delivery/Box';
 import { getControls } from '../delivery/Control';
 
-import '../../node_modules/react-grid-layout/css/styles.css';
-import '../../node_modules/react-resizable/css/styles.css';
-
 import ReactGridLayout, { Responsive, WidthProvider } from 'react-grid-layout';
 import { controlComponent } from '../components/control';
 import { GetDisplays } from '../delivery/DIsplay';

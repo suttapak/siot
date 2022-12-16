@@ -10,10 +10,9 @@ export function Modal({ children, open, setOpen }: ModalProps) {
   return (
     <>
       <div
-        aria-hidden='true'
         className={`${
           open ? 'fixed' : 'hidden'
-        } overflow-y-auto overflow-x-hidden max-w-md mx-auto fixed top-0 right-0 left-0 z-50 w-auto md:inset-0 h-modal md:h-full`}
+        } overflow-y-auto overflow-x-hidden z-50 max-w-md mx-auto top-0 right-0 left-0 w-auto md:inset-0 h-modal md:h-full`}
       >
         <div className='relative top-1/2 -translate-y-1/2 p-4 w-auto mx-auto max-w-md h-full md:h-auto'>
           <div className='relative bg-white rounded-lg shadow dark:bg-gray-700'>
