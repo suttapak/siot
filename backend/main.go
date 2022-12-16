@@ -89,6 +89,7 @@ func main() {
 	boxGroup.Use(jwtWare.JWTWare)
 	boxGroup.POST("", boxHandler.Create)
 	boxGroup.GET("", boxHandler.FindBoxes)
+	boxGroup.GET("/members", boxHandler.Member)
 	boxGroup.GET("/:boxId", boxHandler.FindBox)
 	boxGroup.PUT("/:boxId", graudRole.CanWrite, boxHandler.Update)
 	boxGroup.DELETE("/:boxId", graudRole.CanWrite, boxHandler.Delete)
@@ -102,6 +103,8 @@ func main() {
 	controlGroup := r.Group("boxes/:boxId/controls", jwtWare.JWTWare)
 	controlGroup.POST("", graudRole.CanWrite, controlHandler.Create)
 	controlGroup.GET("", controlHandler.FindControls)
+	controlGroup.PUT("/:controlId", graudRole.CanWrite, controlHandler.Update)
+	controlGroup.DELETE("/:controlId", graudRole.CanWrite, controlHandler.Delete)
 	// display data
 	displayDataGroup := r.Group("boxes/:boxId/displays/:displayId/data", jwtWare.JWTWare)
 	displayDataGroup.GET("", displayDataHandler.Displays)
@@ -110,6 +113,8 @@ func main() {
 	displayGroup := r.Group("boxes/:boxId/displays", jwtWare.JWTWare)
 	displayGroup.POST("", graudRole.CanWrite, displayHandler.Create)
 	displayGroup.GET("", displayHandler.FindDisplays)
+	displayGroup.PUT("/:displayId", graudRole.CanWrite, displayHandler.Update)
+	displayGroup.DELETE("/:displayId", graudRole.CanWrite, displayHandler.Delete)
 
 	mqttGroup := r.Group("mqtt")
 	mqttGroup.POST("/auth", mqttHandler.Auth)

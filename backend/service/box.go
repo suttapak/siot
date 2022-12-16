@@ -11,6 +11,7 @@ type BoxService interface {
 	Create(ctx context.Context, req *CreateBoxRequest) (res *BoxResponse, err error)
 	FindBoxes(ctx context.Context, req *FindBoxesRequest) (res []BoxResponse, err error)
 	FindBoxe(ctx context.Context, req *FindBoxRequest) (res *BoxResponse, err error)
+	FindBoxByMember(ctx context.Context, uId uuid.UUID) (res []BoxResponse, err error)
 	Update(ctx context.Context, uId, bId uuid.UUID, req UpdateBoxRequest) (res *BoxResponse, err error)
 	Delete(ctx context.Context, uId, bId uuid.UUID) error
 }

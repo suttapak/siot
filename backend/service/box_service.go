@@ -160,6 +160,19 @@ func (s *boxService) Delete(ctx context.Context, uId, bId uuid.UUID) error {
 	return err
 }
 
+func (s *boxService) FindBoxByMember(ctx context.Context, uId uuid.UUID) (res []BoxResponse, err error) {
+	box, err := s.boxRepo.FindBoxByMember(ctx, uId)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[[]BoxResponse](box)
+	if err != nil {
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+
 var letterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 func randStringRunes(n int) string {
