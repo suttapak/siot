@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils"
@@ -68,7 +69,7 @@ func (s *displayService) Create(ctx context.Context, req *CreateDisplayRequest) 
 	// create display
 	displayBody := repository.CreateDisplayRequest{
 		Name:        req.Name,
-		Key:         req.Key,
+		Key:         strings.ToUpper(req.Key),
 		Description: req.Description,
 		BoxId:       req.BoxId,
 		LayoutId:    layout.ID,
@@ -117,4 +118,27 @@ func (s *displayService) FindDisplay(ctx context.Context, req *FindDisplaysReque
 	res, err = utils.Recast[[]DisplayResponse](displays)
 
 	return res, err
+}
+
+func (s *displayService) Update(ctx context.Context, dId uint, req *UpdateDisplayRequest) (res *DisplayResponse, err error) {
+	body := repository.UpdateDisplayRequest(*req)
+	d, err := s.displayRepo.Update(ctx, dId, body)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[*DisplayResponse](d)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+func (s *displayService) Delete(ctx context.Context, dId uint) error {
+	err := s.displayRepo.Delete(ctx, dId)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrInternalServerError
+	}
+	return nil
 }

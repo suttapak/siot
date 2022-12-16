@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -64,4 +65,40 @@ func (h *controlHandler) FindControls(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, res)
+}
+
+func (h *controlHandler) Update(ctx *gin.Context) {
+	cId, err := strconv.Atoi(ctx.Param("controlId"))
+	if err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	body := service.UpdateControlRequest{}
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	res, err := h.controlServ.Update(ctx, uint(cId), &body)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	ctx.JSON(http.StatusCreated, res)
+}
+
+func (h *controlHandler) Delete(ctx *gin.Context) {
+	cId, err := strconv.Atoi(ctx.Param("controlId"))
+	if err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	err = h.controlServ.Delete(ctx, uint(cId))
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(errs.ErrBadRequest))
+		return
+	}
+	ctx.JSON(http.StatusCreated, ResponseOk)
 }

@@ -13,6 +13,8 @@ type DisplayRepository interface {
 	FindDisplay(ctx context.Context, req *FindDisplayRequest) (control *model.Display, err error)
 	FindDisplays(ctx context.Context, req *FindDisplaysRequest) (control []model.Display, err error)
 	FindDisplaysByKey(ctx context.Context, boxId uuid.UUID, key string) (control []model.Display, err error)
+	Update(ctx context.Context, dId uint, req UpdateDisplayRequest) (d *model.Display, err error)
+	Delete(ctx context.Context, dId uint) error
 }
 
 type FindDisplaysRequest struct {
@@ -30,4 +32,10 @@ type CreateDisplayRequest struct {
 	BoxId       uuid.UUID `json:"boxId"`
 	LayoutId    uint
 	WidgetId    uint
+}
+
+type UpdateDisplayRequest struct {
+	Name        string `json:"name"`
+	Key         string `json:"key"`
+	Description string `json:"description"`
 }

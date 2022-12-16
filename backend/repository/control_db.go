@@ -45,3 +45,22 @@ func (r *controlRepository) FindControlsByKey(ctx context.Context, boxId uuid.UU
 	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Find(&control).Error
 	return control, err
 }
+
+func (r *controlRepository) Update(ctx context.Context, cId uint, req *UpdateControlRequest) (c *model.Control, err error) {
+	c = &model.Control{
+		Model: model.Model{
+			ID: cId,
+		},
+		Name:        req.Name,
+		Key:         req.Key,
+		Description: req.Description,
+	}
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("id = ? ", cId).Updates(&c).Error
+	return c, err
+}
+func (r *controlRepository) Delete(ctx context.Context, cId uint) error {
+	var err error
+	var c model.Control
+	err = r.db.WithContext(ctx).Where("id = ? ", cId).Delete(&c).Error
+	return err
+}
