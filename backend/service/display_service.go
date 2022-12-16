@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils"
@@ -68,7 +69,7 @@ func (s *displayService) Create(ctx context.Context, req *CreateDisplayRequest) 
 	// create display
 	displayBody := repository.CreateDisplayRequest{
 		Name:        req.Name,
-		Key:         req.Key,
+		Key:         strings.ToUpper(req.Key),
 		Description: req.Description,
 		BoxId:       req.BoxId,
 		LayoutId:    layout.ID,
