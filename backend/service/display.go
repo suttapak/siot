@@ -10,6 +10,8 @@ import (
 type DisplayService interface {
 	Create(ctx context.Context, req *CreateDisplayRequest) (res *DisplayResponse, err error)
 	FindDisplay(ctx context.Context, req *FindDisplaysRequest) (res []DisplayResponse, err error)
+	Update(ctx context.Context, dId uint, req *UpdateDisplayRequest) (res *DisplayResponse, err error)
+	Delete(ctx context.Context, dId uint) error
 }
 
 type FindDisplaysRequest struct {
@@ -33,6 +35,12 @@ type CreateDisplayRequest struct {
 	Widget struct {
 		ID uint `json:"id" binding:"required"`
 	} `json:"widget" binding:"required"`
+}
+
+type UpdateDisplayRequest struct {
+	Name        string `json:"name"`
+	Key         string `json:"key"`
+	Description string `json:"description"`
 }
 
 type DisplayResponse struct {

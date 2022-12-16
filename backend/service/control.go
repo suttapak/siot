@@ -10,6 +10,8 @@ import (
 type ControlService interface {
 	Create(ctx context.Context, req *CreateControlRequest) (res *ControlResponse, err error)
 	FindControls(ctx context.Context, req *FindControlsRequest) (res []ControlResponse, err error)
+	Update(ctx context.Context, cId uint, req *UpdateControlRequest) (res *ControlResponse, err error)
+	Delete(ctx context.Context, cId uint) error
 }
 
 type FindControlsRequest struct {
@@ -33,6 +35,12 @@ type CreateControlRequest struct {
 	Widget struct {
 		ID uint `json:"id" binding:"required"`
 	} `json:"widget" binding:"required"`
+}
+
+type UpdateControlRequest struct {
+	Name        string `json:"name"`
+	Key         string `json:"key"`
+	Description string `json:"description"`
 }
 
 type ControlResponse struct {

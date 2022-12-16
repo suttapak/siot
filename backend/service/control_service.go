@@ -115,3 +115,26 @@ func (s *controlService) FindControls(ctx context.Context, req *FindControlsRequ
 	}
 	return res, err
 }
+
+func (s *controlService) Update(ctx context.Context, cId uint, req *UpdateControlRequest) (res *ControlResponse, err error) {
+	// find con
+	body := repository.UpdateControlRequest(*req)
+	c, err := s.controlRepo.Update(ctx, cId, &body)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[*ControlResponse](c)
+	if err != nil {
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+func (s *controlService) Delete(ctx context.Context, cId uint) error {
+	err := s.controlRepo.Delete(ctx, cId)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrInternalServerError
+	}
+	return nil
+}

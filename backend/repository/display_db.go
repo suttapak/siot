@@ -56,3 +56,22 @@ func (r *displayRepository) FindDisplayByBoxId(ctx context.Context, bId uuid.UUI
 	err = r.db.Where("box_id = ? AND id = ?", bId, dId).Limit(20).Order("id desc").First(&c).Error
 	return c, err
 }
+
+func (r *displayRepository) Update(ctx context.Context, dId uint, req UpdateDisplayRequest) (d *model.Display, err error) {
+	d = &model.Display{
+		Model: model.Model{
+			ID: dId,
+		},
+		Name:        req.Name,
+		Key:         req.Key,
+		Description: req.Description,
+	}
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("id = ? ", dId).Updates(&d).Error
+	return d, err
+}
+func (r *displayRepository) Delete(ctx context.Context, dId uint) error {
+	var err error
+	var d model.Display
+	err = r.db.WithContext(ctx).Where("id = ? ", dId).Delete(&d).Error
+	return err
+}

@@ -119,3 +119,26 @@ func (s *displayService) FindDisplay(ctx context.Context, req *FindDisplaysReque
 
 	return res, err
 }
+
+func (s *displayService) Update(ctx context.Context, dId uint, req *UpdateDisplayRequest) (res *DisplayResponse, err error) {
+	body := repository.UpdateDisplayRequest(*req)
+	d, err := s.displayRepo.Update(ctx, dId, body)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[*DisplayResponse](d)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+func (s *displayService) Delete(ctx context.Context, dId uint) error {
+	err := s.displayRepo.Delete(ctx, dId)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrInternalServerError
+	}
+	return nil
+}
