@@ -65,7 +65,9 @@ func main() {
 	widgetCtHandler := handler.NewWidgetControlHandler(widgetCtServ)
 	widgetDpHandler := handler.NewWidgetDisplayHandler(widgetDpServ)
 
+	// middle ware
 	jwtWare := middleware.NewJWTWare(conf)
+	graudRole := middleware.NewGraudRole(boxMemRepo)
 
 	r := gin.Default()
 
@@ -88,17 +90,17 @@ func main() {
 	boxGroup.POST("", boxHandler.Create)
 	boxGroup.GET("", boxHandler.FindBoxes)
 	boxGroup.GET("/:boxId", boxHandler.FindBox)
-	boxGroup.PUT("/:boxId", boxHandler.Update)
-	boxGroup.DELETE("/:boxId", boxHandler.Delete)
+	boxGroup.PUT("/:boxId", graudRole.CanWrite, boxHandler.Update)
+	boxGroup.DELETE("/:boxId", graudRole.CanWrite, boxHandler.Delete)
 
 	// box member
 	boxMemberGroup := r.Group("boxes/:boxId/members", jwtWare.JWTWare)
 	boxMemberGroup.GET("", boxMemberHandler.BoxMembers)
-	boxMemberGroup.POST("", boxMemberHandler.AddMember)
+	boxMemberGroup.POST("", graudRole.CanWrite, boxMemberHandler.AddMember)
 
 	// control
 	controlGroup := r.Group("boxes/:boxId/controls", jwtWare.JWTWare)
-	controlGroup.POST("", controlHandler.Create)
+	controlGroup.POST("", graudRole.CanWrite, controlHandler.Create)
 	controlGroup.GET("", controlHandler.FindControls)
 	// display data
 	displayDataGroup := r.Group("boxes/:boxId/displays/:displayId/data", jwtWare.JWTWare)
@@ -106,7 +108,7 @@ func main() {
 
 	// display
 	displayGroup := r.Group("boxes/:boxId/displays", jwtWare.JWTWare)
-	displayGroup.POST("", displayHandler.Create)
+	displayGroup.POST("", graudRole.CanWrite, displayHandler.Create)
 	displayGroup.GET("", displayHandler.FindDisplays)
 
 	mqttGroup := r.Group("mqtt")
