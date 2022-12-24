@@ -7,6 +7,10 @@ import { FindBox } from '../delivery/Box';
 import { getControls } from '../delivery/Control';
 import { GetDisplays } from '../delivery/DIsplay';
 import 'moment/locale/th';
+import { FiEdit } from 'react-icons/fi';
+import { Modal } from '../components/Modal';
+import { UpdateControlForm } from '../form/UpdateControlForm';
+import { UpdateDisplayForm } from '../form/UpdateDisplayForm';
 moment.locale('th');
 type Props = {};
 
@@ -17,6 +21,9 @@ const BoxPage = (props: Props) => {
 
   const { data: controls } = useQuery(['controls'], async () => await getControls(String(boxId)));
   const { data: displays } = useQuery(['displays'], async () => await GetDisplays(String(boxId)));
+
+  const [openModalCt, setOpenModalCt] = React.useState<number | null | boolean>(null);
+  const [openModalDp, setOpenModalDp] = React.useState<number | null | boolean>(null);
 
   return (
     <React.Fragment>
@@ -58,18 +65,33 @@ const BoxPage = (props: Props) => {
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Name</th>
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Key</th>
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Description</th>
+                  <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>etc.</th>
                 </tr>
               </thead>
               <tbody className='bg-white dark:bg-slate-800'>
                 {controls?.map((value, index) => {
                   return (
-                    <tr key={index}>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{index + 1}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.widget.name}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.name}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
-                    </tr>
+                    <React.Fragment key={index}>
+                      <tr>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{index + 1}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.widget.name}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.name}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
+                        <td className='border-b w-8 border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-900 dark:text-gray-400'>
+                          <button
+                            onClick={() => setOpenModalCt(value.id)}
+                            type='button'
+                            className='border  w-7 h-7 rounded-md hover:bg-yellow-300 flex justify-center items-center hover:text-black'
+                          >
+                            <FiEdit size={20} />
+                          </button>
+                        </td>
+                      </tr>
+                      <Modal open={openModalCt === value.id} setOpen={setOpenModalCt}>
+                        <UpdateControlForm setOpen={setOpenModalCt} control={value} />
+                      </Modal>
+                    </React.Fragment>
                   );
                 })}
               </tbody>
@@ -88,18 +110,33 @@ const BoxPage = (props: Props) => {
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Name</th>
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Key</th>
                   <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>Description</th>
+                  <th className='border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-gray-700 dark:text-gray-200 text-left'>etc.</th>
                 </tr>
               </thead>
               <tbody className='bg-white dark:bg-slate-800'>
                 {displays?.map((value, index) => {
                   return (
-                    <tr key={index}>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{index + 1}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.widget.name}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.name}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
-                      <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
-                    </tr>
+                    <React.Fragment key={index}>
+                      <tr key={index}>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{index + 1}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.widget.name}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.name}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
+                        <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
+                        <td className='border-b w-8 border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-900 dark:text-gray-400'>
+                          <button
+                            onClick={() => setOpenModalDp(value.id)}
+                            type='button'
+                            className='border  w-7 h-7 rounded-md hover:bg-yellow-300 flex justify-center items-center hover:text-black'
+                          >
+                            <FiEdit size={20} />
+                          </button>
+                        </td>
+                      </tr>
+                      <Modal open={openModalDp === value.id} setOpen={setOpenModalDp}>
+                        <UpdateDisplayForm setOpen={setOpenModalDp} display={value} />
+                      </Modal>
+                    </React.Fragment>
                   );
                 })}
               </tbody>

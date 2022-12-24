@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ModalProps {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: React.Dispatch<React.SetStateAction<any>>;
   children: React.ReactNode;
 }
 

@@ -78,3 +78,16 @@ func (b *boxRepository) FindBoxByMember(ctx context.Context, userId uuid.UUID) (
 	}
 	return box, err
 }
+
+func (b *boxRepository) FindIsMember(ctx context.Context, bId, uId uuid.UUID) (box *model.Box, err error) {
+	bm := []model.BoxMember{}
+	if err := b.db.WithContext(ctx).Where("user_id = ?", uId).Find(&bm).Error; err != nil {
+		return nil, err
+	}
+	var rx []uuid.UUID
+	for _, v := range bm {
+		rx = append(rx, v.BoxId)
+	}
+	err = b.db.WithContext(ctx).Where("id IN ? AND id = ?", rx, bId).Preload(clause.Associations).First(&box).Error
+	return box, err
+}

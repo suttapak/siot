@@ -29,7 +29,7 @@ func NewDisplayService(boxRepo repository.BoxRepository,
 
 func (s *displayService) Create(ctx context.Context, req *CreateDisplayRequest) (res *DisplayResponse, err error) {
 	// check box
-	_, err = s.boxRepo.FindBox(ctx, req.BoxId, req.UserId)
+	_, err = s.boxRepo.FindIsMember(ctx, req.BoxId, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			logs.Error(err)
@@ -97,7 +97,7 @@ func (s *displayService) Create(ctx context.Context, req *CreateDisplayRequest) 
 }
 
 func (s *displayService) FindDisplay(ctx context.Context, req *FindDisplaysRequest) (res []DisplayResponse, err error) {
-	_, err = s.boxRepo.FindBox(ctx, req.BoxId, req.UserId)
+	_, err = s.boxRepo.FindIsMember(ctx, req.BoxId, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			logs.Error(err)

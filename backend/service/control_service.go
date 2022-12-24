@@ -24,7 +24,7 @@ func NewControlService(boxRepo repository.BoxRepository, controlRepo repository.
 }
 
 func (s *controlService) Create(ctx context.Context, req *CreateControlRequest) (res *ControlResponse, err error) {
-	_, err = s.boxRepo.FindBox(ctx, req.BoxId, req.UserId)
+	_, err = s.boxRepo.FindIsMember(ctx, req.BoxId, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			logs.Error(err)
@@ -89,7 +89,7 @@ func (s *controlService) Create(ctx context.Context, req *CreateControlRequest) 
 	return res, err
 }
 func (s *controlService) FindControls(ctx context.Context, req *FindControlsRequest) (res []ControlResponse, err error) {
-	_, err = s.boxRepo.FindBox(ctx, req.BoxId, req.UserId)
+	_, err = s.boxRepo.FindIsMember(ctx, req.BoxId, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			logs.Error(err)

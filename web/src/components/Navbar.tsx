@@ -57,17 +57,15 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
           {auth.user && (
             <React.Fragment>
               <Menu setOpen={setOpenMenu} open={openMenu}>
-                <li className='px-3 w-full py-2  text-base hover:bg-gray-200'>
-                  <Link onClick={() => setOpenMenu(false)} to={`/profile/${auth.user.id}`}>
-                    Profile
-                  </Link>
-                </li>
+                <Link onClick={() => setOpenMenu(false)} to={`/profile/${auth.user.id}`}>
+                  <li className='px-3 w-full py-2  text-base hover:bg-gray-200'>Profile</li>
+                </Link>
               </Menu>
               <div className='z-20 w-9 h-9   flex justify-center items-cente'>
                 <img
                   className='cursor-pointer rounded-full w-full h-full overflow-hidden'
                   onClick={() => setOpenMenu(!openMenu)}
-                  src={process.env.REACT_APP_SERVER_URL + auth.user.avatar.url.substring(1)}
+                  src={process.env.REACT_APP_SERVER_URL_PATH + auth.user.avatar.url.substring(1)}
                   alt={auth.user.avatar.title}
                 />
               </div>

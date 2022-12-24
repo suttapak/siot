@@ -34,3 +34,18 @@ export const CreateControl = async (boxId: string, body: CreateControlDto) => {
   });
   return res.data;
 };
+
+export type UpdateControlDto = {
+  name: string;
+  key: string;
+  description: string;
+};
+
+export const UpdateControlDeliver = async (boxId: string, cId: number, body: UpdateControlDto) => {
+  const res = await apiClient.put<Control>(`boxes/${boxId}/controls/${cId}`, JSON.stringify(body), {
+    headers: {
+      Authorization: `Bearer ${getUserToken()}`,
+    },
+  });
+  return res.data;
+};
