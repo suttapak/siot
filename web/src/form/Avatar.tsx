@@ -8,7 +8,7 @@ import { UpdateAvatarDeliver, UpdateAvatarParams } from '../delivery/Avatar';
 import { useAuth } from '../hooks';
 
 type Props = {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: React.Dispatch<React.SetStateAction<any>>;
 };
 
 export const UpdateAvatarForm: React.FC<Props> = (props: Props) => {
@@ -43,9 +43,7 @@ export const UpdateAvatarForm: React.FC<Props> = (props: Props) => {
         <input
           className='form-control block w-full px-2 py-1 text-md font-normal text-gray-700 bg-white  border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none'
           type='file'
-          placeholder='Smart farm at Ubon'
-          id='name'
-          {...(register('file'), { required: true, accept: 'image/*' })}
+          {...register('file')}
         />
       </div>
       <div className='py-4'>

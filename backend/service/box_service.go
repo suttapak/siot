@@ -106,7 +106,7 @@ func (s *boxService) FindBoxes(ctx context.Context, req *FindBoxesRequest) (res 
 }
 
 func (s *boxService) FindBoxe(ctx context.Context, req *FindBoxRequest) (res *BoxResponse, err error) {
-	box, err := s.boxRepo.FindBox(ctx, req.BoxId, req.UserId)
+	box, err := s.boxRepo.FindIsMember(ctx, req.BoxId, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errs.ErrNotFound
@@ -123,7 +123,7 @@ func (s *boxService) FindBoxe(ctx context.Context, req *FindBoxRequest) (res *Bo
 }
 
 func (s *boxService) Update(ctx context.Context, uId, bId uuid.UUID, req UpdateBoxRequest) (res *BoxResponse, err error) {
-	_, err = s.boxRepo.FindBox(ctx, bId, uId)
+	_, err = s.boxRepo.FindIsMember(ctx, bId, uId)
 	if err != nil {
 		logs.Error(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -145,7 +145,7 @@ func (s *boxService) Update(ctx context.Context, uId, bId uuid.UUID, req UpdateB
 }
 func (s *boxService) Delete(ctx context.Context, uId, bId uuid.UUID) error {
 	var err error
-	_, err = s.boxRepo.FindBox(ctx, bId, uId)
+	_, err = s.boxRepo.FindIsMember(ctx, bId, uId)
 	if err != nil {
 		logs.Error(err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -158,6 +158,19 @@ func (s *boxService) Delete(ctx context.Context, uId, bId uuid.UUID) error {
 		return errs.ErrInternalServerError
 	}
 	return err
+}
+
+func (s *boxService) FindBoxByMember(ctx context.Context, uId uuid.UUID) (res []BoxResponse, err error) {
+	box, err := s.boxRepo.FindBoxByMember(ctx, uId)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[[]BoxResponse](box)
+	if err != nil {
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
 }
 
 var letterRunes = []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")

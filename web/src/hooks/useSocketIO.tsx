@@ -19,7 +19,7 @@ export const useSocketIO = () => {
   return React.useContext(socketIOContext);
 };
 
-var socket = io('ws://localhost:4000/', {
+var socket = io('' + process.env.REACT_APP_WS_URL, {
   reconnectionDelayMax: 10000,
   transports: ['websocket'],
 });

@@ -34,3 +34,18 @@ export const CreateDisplays = async (boxId: string, body: CreateDisplayDto) => {
   });
   return res.data;
 };
+
+export type UpdateDisplayDto = {
+  name: string;
+  key: string;
+  description: string;
+};
+
+export const UpdateDisplayDeliver = async (boxId: string, dId: number, body: UpdateDisplayDto) => {
+  const res = await apiClient.put<DisplayType>(`boxes/${boxId}/displays/${dId}`, JSON.stringify(body), {
+    headers: {
+      Authorization: `Bearer ${getUserToken()}`,
+    },
+  });
+  return res.data;
+};

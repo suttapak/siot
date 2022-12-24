@@ -6,14 +6,18 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/db"
 	"github.com/suttapak/siot-backend/external"
 	"github.com/suttapak/siot-backend/handler"
 	"github.com/suttapak/siot-backend/middleware"
+	"github.com/suttapak/siot-backend/model"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/service"
+	"github.com/suttapak/siot-backend/utils/errs"
+	"github.com/suttapak/siot-backend/utils/logs"
 )
 
 func main() {
@@ -89,6 +93,7 @@ func main() {
 	boxGroup.Use(jwtWare.JWTWare)
 	boxGroup.POST("", boxHandler.Create)
 	boxGroup.GET("", boxHandler.FindBoxes)
+	boxGroup.GET("/members", boxHandler.Member)
 	boxGroup.GET("/:boxId", boxHandler.FindBox)
 	boxGroup.PUT("/:boxId", graudRole.CanWrite, boxHandler.Update)
 	boxGroup.DELETE("/:boxId", graudRole.CanWrite, boxHandler.Delete)
@@ -102,6 +107,8 @@ func main() {
 	controlGroup := r.Group("boxes/:boxId/controls", jwtWare.JWTWare)
 	controlGroup.POST("", graudRole.CanWrite, controlHandler.Create)
 	controlGroup.GET("", controlHandler.FindControls)
+	controlGroup.PUT("/:controlId", graudRole.CanWrite, controlHandler.Update)
+	controlGroup.DELETE("/:controlId", graudRole.CanWrite, controlHandler.Delete)
 	// display data
 	displayDataGroup := r.Group("boxes/:boxId/displays/:displayId/data", jwtWare.JWTWare)
 	displayDataGroup.GET("", displayDataHandler.Displays)
@@ -110,6 +117,8 @@ func main() {
 	displayGroup := r.Group("boxes/:boxId/displays", jwtWare.JWTWare)
 	displayGroup.POST("", graudRole.CanWrite, displayHandler.Create)
 	displayGroup.GET("", displayHandler.FindDisplays)
+	displayGroup.PUT("/:displayId", graudRole.CanWrite, displayHandler.Update)
+	displayGroup.DELETE("/:displayId", graudRole.CanWrite, displayHandler.Delete)
 
 	mqttGroup := r.Group("mqtt")
 	mqttGroup.POST("/auth", mqttHandler.Auth)
@@ -132,6 +141,32 @@ func main() {
 	widgetCtGroup.GET("", widgetCtHandler.Widgets)
 	widgetCtGroup.GET("/:widgetId", widgetCtHandler.Widget)
 	widgetCtGroup.POST("", widgetCtHandler.Create)
+
+	subPubGroup := r.Group("/subpub/:boxId/:boxSecret")
+	subPubGroup.GET("", func(ctx *gin.Context) {
+		s := model.CanSubscribe{}
+		boxId, err := uuid.Parse(ctx.Param("boxId"))
+		if err != nil {
+			ctx.AbortWithStatusJSON(500, errs.ErrBadRequest)
+			return
+		}
+		boxSecret := ctx.Param("boxSecret")
+
+		b := model.BoxSecret{}
+		err = conn.WithContext(ctx).Where("box_id = ? AND secret = ? ", boxId, boxSecret).First(&b).Error
+		if err != nil {
+			logs.Error(err)
+			ctx.AbortWithStatusJSON(500, errs.ErrInternalServerError)
+			return
+		}
+		err = conn.WithContext(ctx).Where("box_id = ?", boxId).First(&s).Error
+		if err != nil {
+			logs.Error(err)
+			ctx.AbortWithStatusJSON(500, errs.ErrInternalServerError)
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{"subpub": s.CanSubscribe})
+	})
 
 	// -----
 	r.Static("/asset", "./public/asset")
@@ -176,7 +211,7 @@ func main() {
 
 func GinMiddleware(allowOrigin string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, Content-Length, X-CSRF-Token, Token, session, Origin, Host, Connection, Accept-Encoding, Accept-Language, X-Requested-With")

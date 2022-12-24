@@ -121,3 +121,17 @@ func (h *boxHandler) Delete(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, ResponseOk)
 }
+
+func (h *boxHandler) Member(ctx *gin.Context) {
+	userId, err := utils.UserId(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	res, err := h.boxServ.FindBoxByMember(ctx, userId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, res)
+}

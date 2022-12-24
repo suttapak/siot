@@ -12,6 +12,8 @@ type BoxRepository interface {
 	FindAll(ctx context.Context, userId uuid.UUID) (boxes []model.Box, err error)
 	FindBoxBySecret(ctx context.Context, boxId uuid.UUID, secret string) (box *model.Box, err error)
 	FindBox(ctx context.Context, boxId, userId uuid.UUID) (box *model.Box, err error)
+	FindIsMember(ctx context.Context, bId, uId uuid.UUID) (box *model.Box, err error)
+	FindBoxByMember(ctx context.Context, userId uuid.UUID) (box []model.Box, err error)
 	FindBoxById(ctx context.Context, boxId uuid.UUID) (box *model.Box, err error)
 	UpdateBox(ctx context.Context, req UpdateBoxRequest, bId uuid.UUID) (box *model.Box, err error)
 	DeleteBox(ctx context.Context, bId uuid.UUID) error

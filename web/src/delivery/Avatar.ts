@@ -9,8 +9,9 @@ export interface UpdateAvatarParams {
 export const UpdateAvatarDeliver = async ({ file }: UpdateAvatarParams) => {
   let formdata = new FormData();
   formdata.append('file', file[0]);
+  console.log(file);
 
-  const res = await axios.put<AvatarType>('http://localhost:4000/avatar', formdata, {
+  const res = await axios.put<AvatarType>(process.env.REACT_APP_SERVER_URL_PATH + 'avatar', formdata, {
     headers: {
       Authorization: `Bearer ${getUserToken()}`,
       'Content-Type': 'multipart/form-data',

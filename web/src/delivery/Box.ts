@@ -62,3 +62,12 @@ export const DeleteBoxDeliver = async (boxId?: string) => {
   });
   return res.data;
 };
+
+export const FindBoxInMember = async () => {
+  const res = await apiClient.get<Box[]>('/boxes/members', {
+    headers: {
+      Authorization: `Bearer ${getUserToken()}`,
+    },
+  });
+  return res.data;
+};
