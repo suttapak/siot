@@ -8,15 +8,10 @@ services:
       - ./mosquitto/mosquitto.conf:/etc/mosquitto/mosquitto.conf
       - ./mosquitto/conf.d:/mosquitto/conf.d
 
-    ports:
-      - 1883:1883
-
   db:
     image: postgres
     restart: always
     container_name: db
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_USER: postgres
@@ -31,30 +26,26 @@ services:
       APP_PORT: 3000
       PG_USERNAME: postgres
       PG_PASSWORD: example
-      PG_HOST: host.docker.internal
+      PG_HOST: db
       PG_PORT: 5432
       PG_DB: example
       JWT_TTL: 32
       JWT_SECRET: suttapakmatee
       BCRYPT_SALT: 11
       MQTT_PORT: 1883
-      MQTT_BROKER: host.docker.internal
+      MQTT_BROKER: mosquitto
       MQTT_USERNAME: afd19621-f5ad-4663-9b82-5ed76c8e1ae2
       MQTT_PASSWORD: spider09
     ports:
       - 4000:3000
     volumes:
-      - ./docker/backend/:/public
+      - ./docker/backend/public:/public
     depends_on:
       - db
 
   frontend:
     container_name: swiot
     build: ./web
-    environment:
-      REACT_APP_SERVER_URL: 'host.docker.internal:3000'
-      REACT_APP_SERVER_URL_PATH: 'http://host.docker.internal:3000/'
-      REACT_APP_WS_URL: 'ws://locahost:3000/'
     ports:
       - 3000:80
     volumes:
