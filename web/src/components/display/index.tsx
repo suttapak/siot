@@ -16,17 +16,22 @@ export const displayComponent = [DNumber, DLineChart, DCircularPercent];
 
 const Display = (props: Props) => {
   const { data } = useQuery(['widgetDisplays'], getWidgetDisplays);
+  const { canSub, setWidgetId } = props;
 
   return (
     <>
       <div className='w-full py-4 flex justify-center items-center flex-col space-y-4 px-2'>
         {data?.map((value) => (
           <>
-            {displayComponent.map((V, i) => (
-              <React.Fragment key={i}>
-                {V.name.toLowerCase() === value.name.toLocaleLowerCase() && <V canSub={props.canSub} setWidgetId={props.setWidgetId} widgetMode />}
-              </React.Fragment>
-            ))}
+            {value.name === 'DLineChart' ? (
+              <DLineChart canSub={canSub} setWidgetId={setWidgetId} widgetMode />
+            ) : value.name === 'DNumber' ? (
+              <DNumber canSub={canSub} setWidgetId={setWidgetId} widgetMode />
+            ) : value.name === 'DCircularPercent' ? (
+              <DCircularPercent canSub={canSub} setWidgetId={setWidgetId} widgetMode />
+            ) : (
+              <div className='hidden'></div>
+            )}
           </>
         ))}
       </div>

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -13,26 +14,26 @@ type Configs struct {
 	} `yaml:"jwt"`
 
 	PG struct {
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
+		Username string `yaml:"username" `
+		Password string `yaml:"password" `
 		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
+		Port     int    `yaml:"port" `
 		DB       string `yaml:"db"`
 	} `yaml:"pg"`
 
 	Bcrypt struct {
-		Salt int `yaml:"salt"`
+		Salt int `yaml:"salt" `
 	} `yaml:"bcrypt"`
 
 	App struct {
-		Port int `yaml:"port"`
+		Port int `yaml:"port" `
 	} `yaml:"app"`
 
 	Mqtt struct {
-		Port     int    `yaml:"port"`
-		Broker   string `yaml:"broker"`
+		Port     int    `yaml:"port" `
+		Broker   string `yaml:"broker" `
 		Username string `yaml:"username"`
-		Password string `yaml:"password"`
+		Password string `yaml:"password" `
 	}
 }
 
@@ -48,12 +49,13 @@ func Default() *Configs {
 		panic(err)
 	}
 
-	config := &Configs{}
+	Config := Configs{}
 
-	err = viper.Unmarshal(config)
+	err = viper.Unmarshal(&Config)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(Config)
 
-	return config
+	return &Config
 }

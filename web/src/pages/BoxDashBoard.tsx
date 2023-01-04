@@ -8,13 +8,18 @@ import { FindBox } from '../delivery/Box';
 import { getControls } from '../delivery/Control';
 
 import ReactGridLayout, { Responsive, WidthProvider } from 'react-grid-layout';
-import { controlComponent } from '../components/control';
 import { GetDisplays } from '../delivery/DIsplay';
-import { displayComponent } from '../components/display';
 import { Modal } from '../components/Modal';
 import { CreateControlComponent } from '../form/Control';
 import { CreateDisplayComponent } from '../form/Display';
 import BoxContainer from '../components/BoxContainer';
+import DCircularPercent from '../components/display/DCircularPercent';
+import DNumber from '../components/display/DNumber';
+import DLineChart from '../components/display/DLineChart';
+import { CButton } from '../components/control/CButton';
+import { CButtonNumber } from '../components/control/CButtonNumber';
+import { CSlider } from '../components/control/CSlider';
+import { CSwitch } from '../components/control/CSwitch';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -117,22 +122,36 @@ export function BoxDashBoard() {
             {controls?.map((value) => {
               return (
                 <div key={value.layout.id.toString()} className='w-full'>
-                  {controlComponent.map((V, i) => (
-                    <React.Fragment key={i}>
-                      {value.widget.name.toLowerCase() === V.name.toLowerCase() && <V canSub={'' + box?.canSub.canSubscribe} widget={value} />}
-                    </React.Fragment>
-                  ))}
+                  <>
+                    {value.widget.name === 'CButton' ? (
+                      <CButton canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'CButtonNumber' ? (
+                      <CButtonNumber canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'CSlider' ? (
+                      <CSlider canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'CSwitch' ? (
+                      <CSwitch canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : (
+                      <div className='hidden'></div>
+                    )}
+                  </>
                 </div>
               );
             })}
             {displays?.map((value) => {
               return (
                 <div key={value.layout.id.toString()}>
-                  {displayComponent.map((V, i) => (
-                    <React.Fragment key={i}>
-                      {value.widget.name.toLowerCase() === V.name.toLowerCase() && <V canSub={'' + box?.canSub.canSubscribe} widget={value} />}
-                    </React.Fragment>
-                  ))}
+                  <>
+                    {value.widget.name === 'DCircularPercent' ? (
+                      <DCircularPercent canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'DNumber' ? (
+                      <DNumber canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'DLineChart' ? (
+                      <DLineChart canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : (
+                      <div className='hidden'></div>
+                    )}
+                  </>
                 </div>
               );
             })}

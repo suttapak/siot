@@ -1,0 +1,22 @@
+app:
+  port: 4000
+
+pg:
+  username: 'postgres'
+  password: 'example'
+  host: '127.0.0.1'
+  port: 5432
+  db: 'example'
+
+jwt:
+  ttl: 32
+  secret: 'suttapkamatee'
+
+bcrypt:
+  salt: 11
+
+mqtt:
+  port: 1883
+  broker: '127.0.0.1'
+  username: 'afd19621-f5ad-4663-9b82-5ed76c8e1ae2'
+  password: 'spider09'
