@@ -21,7 +21,7 @@ const ProfilePage = (props: Props) => {
               onClick={() => setOpenMenu(!openMenu)}
               className='absolute cursor-pointer top-0 left-0 w-full h-full z-20 hover:opacity-20 opacity-0 bg-gray-300'
             ></div>
-            <img className='relative z-10' src={process.env.REACT_APP_SERVER_URL + '' + user?.avatar.url.substring(1)} alt={'' + user?.avatar.title} />
+            <img className='relative z-10' src={process.env.REACT_APP_SERVER_URL + '' + user?.avatar.url} alt={'' + user?.avatar.title} />
           </div>
           <Menu position='center' open={openMenu} setOpen={setOpenMenu}>
             <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>

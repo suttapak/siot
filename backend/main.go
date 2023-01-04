@@ -6,18 +6,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/db"
 	"github.com/suttapak/siot-backend/external"
 	"github.com/suttapak/siot-backend/handler"
 	"github.com/suttapak/siot-backend/middleware"
-	"github.com/suttapak/siot-backend/model"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/service"
-	"github.com/suttapak/siot-backend/utils/errs"
-	"github.com/suttapak/siot-backend/utils/logs"
 )
 
 func main() {
@@ -48,6 +44,7 @@ func main() {
 	avatarServ := service.NewAvatarService(avatarRepo)
 	boxServ := service.NewBoxService(conf, boxRepo, boxMemRepo, boxSecretRepo, canSubRepo, canPubRepo)
 	boxMemberServ := service.NewBoxMemberService(userRepo, boxMemRepo)
+	canSubServ := service.NewCanSubService(boxRepo, canSubRepo)
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
 	displayDataServ := service.NewDisplayDataService(displayRepo, displayDataRepo)
 	displayServ := service.NewDisplayService(boxRepo, displayRepo, layoutRepo, widgetDisplayRepo)
@@ -61,6 +58,7 @@ func main() {
 	avatarHandler := handler.NewAvatarHandler(avatarServ)
 	boxHandler := handler.NewBoxHandler(boxServ)
 	boxMemberHandler := handler.NewBoxMemberHandler(boxMemberServ)
+	canSubHandler := handler.NewCanSubHandler(canSubServ)
 	controlHandler := handler.NewControlHandler(controlServ)
 	displayDataHandler := handler.NewDisplayDataHandler(displayDataServ)
 	displayHandler := handler.NewDisplayHandler(displayServ)
@@ -143,30 +141,7 @@ func main() {
 	widgetCtGroup.POST("", widgetCtHandler.Create)
 
 	subPubGroup := r.Group("/subpub/:boxId/:boxSecret")
-	subPubGroup.GET("", func(ctx *gin.Context) {
-		s := model.CanSubscribe{}
-		boxId, err := uuid.Parse(ctx.Param("boxId"))
-		if err != nil {
-			ctx.AbortWithStatusJSON(500, errs.ErrBadRequest)
-			return
-		}
-		boxSecret := ctx.Param("boxSecret")
-
-		b := model.BoxSecret{}
-		err = conn.WithContext(ctx).Where("box_id = ? AND secret = ? ", boxId, boxSecret).First(&b).Error
-		if err != nil {
-			logs.Error(err)
-			ctx.AbortWithStatusJSON(500, errs.ErrInternalServerError)
-			return
-		}
-		err = conn.WithContext(ctx).Where("box_id = ?", boxId).First(&s).Error
-		if err != nil {
-			logs.Error(err)
-			ctx.AbortWithStatusJSON(500, errs.ErrInternalServerError)
-			return
-		}
-		ctx.JSON(http.StatusOK, gin.H{"subpub": s.CanSubscribe})
-	})
+	subPubGroup.GET("", canSubHandler.CanSub)
 
 	// -----
 	r.Static("/asset", "./public/asset")

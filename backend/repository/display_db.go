@@ -48,7 +48,7 @@ func (r *displayRepository) FindDisplays(ctx context.Context, req *FindDisplaysR
 }
 
 func (r *displayRepository) FindDisplaysByKey(ctx context.Context, boxId uuid.UUID, key string) (display []model.Display, err error) {
-	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Find(&display).Error
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Order("id desc").Find(&display).Error
 	return display, err
 }
 

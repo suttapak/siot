@@ -21,6 +21,7 @@ export const CSlider = (props: Props) => {
 
   React.useEffect(() => {
     client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canSub, widget]);
 
   const onPubMsg = (ctx: CtxPubType | null) => {

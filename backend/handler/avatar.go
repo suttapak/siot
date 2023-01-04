@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/suttapak/siot-backend/service"
@@ -20,6 +21,7 @@ func NewAvatarHandler(avatarServ service.AvatarService) *avatarHandler {
 func (h *avatarHandler) Update(c *gin.Context) {
 	userId, err := utils.UserId(c)
 	if err != nil {
+		logs.Error(err)
 		c.AbortWithStatusJSON(handleError(err))
 		return
 	}
@@ -31,6 +33,14 @@ func (h *avatarHandler) Update(c *gin.Context) {
 	}
 	name, url, dst := h.avatarServ.GenerateName(c, file)
 
+	if _, err := os.Stat("./public/asset/images"); os.IsNotExist(err) {
+		err := os.MkdirAll("./public/asset/images", 0775)
+		if err != nil {
+			logs.Error(err)
+			c.AbortWithStatusJSON(handleError(err))
+			return
+		}
+	}
 	if err := c.SaveUploadedFile(file, dst); err != nil {
 		logs.Error(err)
 		c.AbortWithStatusJSON(handleError(err))

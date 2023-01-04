@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useToast } from '../hooks/useToast';
 import { Box } from '../types/Box';
 import { FindBoxes, FindBoxInMember } from '../delivery/Box';
 import { BoxCard } from '../components/BoxCard';
@@ -9,12 +8,8 @@ import { Modal } from '../components/Modal';
 import { CreateBoxComponent } from '../form/Box';
 
 export function HomePage() {
-  const { error, data } = useQuery<Box[], { message: string }>(['boxes'], FindBoxes);
+  const { data } = useQuery<Box[], { message: string }>(['boxes'], FindBoxes);
   const { data: box } = useQuery<Box[], { message: string }>(['boxes-member'], FindBoxInMember);
-
-  const toast = useToast();
-
-  if (error) toast.addMessage(error.message);
 
   const [open, setOpen] = React.useState(false);
 

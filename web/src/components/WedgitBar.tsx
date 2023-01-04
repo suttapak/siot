@@ -1,5 +1,4 @@
 import React from 'react';
-import { CtxPubType } from '../types/CtxPub.type';
 import { Control } from './control';
 import Display from './display';
 

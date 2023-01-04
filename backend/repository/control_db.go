@@ -42,7 +42,7 @@ func (r *controlRepository) FindControls(ctx context.Context, req *FindControlsR
 }
 
 func (r *controlRepository) FindControlsByKey(ctx context.Context, boxId uuid.UUID, key string) (control []model.Control, err error) {
-	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Find(&control).Error
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Where("key = ?", key).Order("id desc").Find(&control).Error
 	return control, err
 }
 

@@ -63,7 +63,9 @@ export const BoxCard = ({ box }: { box: Box }) => {
         {/* avatar */}
         <div className='w-16 h-16 bg-white p-1 rounded-full overflow-hidden absolute bottom-0 right-5 flex justify-center items-center'>
           <div className='w-full h-full rounded-full overflow-hidden'>
-            <img src={process.env.REACT_APP_SERVER_URL_PATH + String(data?.avatar.url.substring(1))} alt={data?.avatar.title} className='w-full ' />
+            {data?.avatar && (
+              <img src={process.env.REACT_APP_SERVER_URL_PATH + String(data?.avatar.url.substring(1))} alt={data?.avatar.title} className='w-full ' />
+            )}
           </div>
         </div>
       </div>

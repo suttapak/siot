@@ -54,9 +54,12 @@ export const CButtonNumber = (props: Props) => {
         <div className='w-24 h-12 flex items-center'>
           <input
             onChange={(e) => {
-              if (typeof e.target.value == typeof 100) {
-                setState(Number(e.target.value));
-                onPubMsg(!props.widgetMode ? { boxId: widget?.BoxId!, data: Number(e.target.value), key: widget?.key! } : null);
+              if (/^\d+(\.\d+)?$/.test(e.target.value) || e.target.value === '') {
+                let data: number = 0;
+                e.target.value === '' ? (data = 0) : (data = Number(e.target.value));
+
+                setState(data);
+                onPubMsg(!props.widgetMode ? { boxId: widget?.BoxId!, data: data, key: widget?.key! } : null);
               }
             }}
             type={'text'}

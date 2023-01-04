@@ -1,10 +1,8 @@
 import React from 'react';
-import { UpdateWidgetForm } from '../../form/WidgetDetailForm';
 import { useSocketIO } from '../../hooks/useSocketIO';
 import { Control } from '../../types/Control';
 import { CtxPubType } from '../../types/CtxPub.type';
 import { DataControl } from '../../types/Data';
-import { Modal } from '../Modal';
 import NameKeyWidget from '../NameKeyWidget';
 
 type Props = {
@@ -24,6 +22,7 @@ export const CButton = (props: Props) => {
 
   React.useEffect(() => {
     client.emit('subscript', { boxId: widget?.BoxId, key: canSub + '/' + widget?.key });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canSub, widget]);
 
   const onPubMsg = (ctx: CtxPubType | null) => {
