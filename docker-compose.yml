@@ -47,7 +47,7 @@ services:
     container_name: swiot
     build: ./web
     ports:
-      - 3000:80
+      - 127.0.0.1:3000:80
     volumes:
       - ./docker/web:/app
     depends_on:
