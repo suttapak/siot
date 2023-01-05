@@ -36,7 +36,7 @@ services:
       BCRYPT_SALT: 11
       MQTT_PORT: 1883
       MQTT_BROKER: mosquitto
-      MQTT_USERNAME: afd19621-f5ad-4663-9b82-5ed76c8e1ae2
+      MQTT_USERNAME: 225166bd-8ce8-4bb4-af0d-09c3c4e0ec79
       MQTT_PASSWORD: spider09
     ports:
       - 127.0.0.1:4000:4000
