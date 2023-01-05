@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -55,7 +54,6 @@ func Default() *Configs {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(Config)
 
 	return &Config
 }

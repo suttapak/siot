@@ -47,7 +47,7 @@ func NewMQTTMachine(client mqtt.Client,
 }
 
 func (m *mqttMachine) MQTTMachine() {
-	time.Sleep(3 * time.Second)
+	time.Sleep(10 * time.Second)
 	ctx := context.Background()
 	t := m.client.Subscribe("#", 0, func(c mqtt.Client, msg mqtt.Message) {
 
