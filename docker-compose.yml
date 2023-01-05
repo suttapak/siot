@@ -7,6 +7,8 @@ services:
     volumes:
       - ./mosquitto/mosquitto.conf:/etc/mosquitto/mosquitto.conf
       - ./mosquitto/conf.d:/mosquitto/conf.d
+    ports:
+      - 127.0.0.1:1883:1883
 
   db:
     image: postgres
@@ -37,7 +39,7 @@ services:
       MQTT_USERNAME: afd19621-f5ad-4663-9b82-5ed76c8e1ae2
       MQTT_PASSWORD: spider09
     ports:
-      - 4000:3000
+      - 127.0.0.1:4000:3000
     volumes:
       - ./docker/backend/public:/public
     depends_on:
