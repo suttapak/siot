@@ -1,13 +1,21 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Logout from '@mui/icons-material/Logout';
 
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
 import { MdSpaceDashboard } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
-import { AiOutlineLogin, AiOutlineLogout } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
-import Menu from './Menu';
 
 interface ItemProps {
   path: string;
@@ -39,7 +47,15 @@ interface NavbarComponentProps {
 export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
   const auth = useAuth();
 
-  const [openMenu, setOpenMenu] = React.useState(false);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
     <React.Fragment>
@@ -56,19 +72,51 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
           </div>
           {auth.user && (
             <React.Fragment>
-              <Menu setOpen={setOpenMenu} open={openMenu}>
-                <Link onClick={() => setOpenMenu(false)} to={`/profile/${auth.user.id}`}>
-                  <li className='px-3 w-full py-2  text-base hover:bg-gray-200'>Profile</li>
+              <Menu
+                sx={{ mt: '45px' }}
+                id='menu-appbar'
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <Link to={`/profile/${auth.user.id}`}>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <ListItemIcon>
+                      <PersonAdd fontSize='small' />
+                    </ListItemIcon>
+                    <Typography textAlign='center'>Profile account</Typography>
+                  </MenuItem>
                 </Link>
+                {auth.user && (
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      auth.signout();
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Logout fontSize='small' />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                )}
               </Menu>
-              <div className='z-20 w-9 h-9   flex justify-center items-cente'>
-                <img
-                  className='cursor-pointer rounded-full w-full h-full overflow-hidden'
-                  onClick={() => setOpenMenu(!openMenu)}
-                  src={process.env.REACT_APP_SERVER_URL_PATH + auth.user.avatar.url.substring(1)}
-                  alt={auth.user.avatar.title}
-                />
-              </div>
+              <Box>
+                <Tooltip title='Open settings'>
+                  <IconButton onClick={handleOpenUserMenu}>
+                    <Avatar src={process.env.REACT_APP_SERVER_URL_PATH + auth.user.avatar.url.substring(1)} alt={auth.user.avatar.title} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </React.Fragment>
           )}
         </div>
@@ -96,27 +144,8 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
           <ul className='space-y-2 flex-col'>
             <Items path='/' setOpen={setOpen}>
               <MdSpaceDashboard />
-              <span className='ml-3'>Dashboard</span>
+              <span className='ml-3'>Home</span>
             </Items>
-            {!auth.user ? (
-              <>
-                <Items path='/signin' setOpen={setOpen}>
-                  <AiOutlineLogin />
-                  <span className='ml-3'>Signin</span>
-                </Items>
-              </>
-            ) : (
-              <button
-                onClick={() => {
-                  auth.signout();
-                  setOpen(false);
-                }}
-                className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
-              >
-                <AiOutlineLogout />
-                <span className='ml-3'>Signout</span>
-              </button>
-            )}
           </ul>
         </div>
       </div>
