@@ -13,9 +13,11 @@ import Logout from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
-import { MdSpaceDashboard } from 'react-icons/md';
 import { CgMenuGridO } from 'react-icons/cg';
 import { GrClose } from 'react-icons/gr';
+import TokenIcon from '@mui/icons-material/Token';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import ArticleIcon from '@mui/icons-material/Article';
 
 interface ItemProps {
   path: string;
@@ -113,7 +115,11 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
               <Box>
                 <Tooltip title='Open settings'>
                   <IconButton onClick={handleOpenUserMenu}>
-                    <Avatar src={process.env.REACT_APP_SERVER_URL_PATH + auth.user.avatar.url.substring(1)} alt={auth.user.avatar.title} />
+                    <Avatar
+                      sx={{ width: 35, height: 35 }}
+                      src={process.env.REACT_APP_SERVER_URL_PATH + auth.user.avatar.url.substring(1)}
+                      alt={auth.user.avatar.title}
+                    />
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -143,9 +149,29 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
         <div className='py-4 overflow-y-auto'>
           <ul className='space-y-2 flex-col'>
             <Items path='/' setOpen={setOpen}>
-              <MdSpaceDashboard />
+              <TokenIcon fontSize={'small'} />
               <span className='ml-3'>Home</span>
             </Items>
+            <li>
+              <a
+                onClick={() => setOpen(false)}
+                href={'https://document.rocket-translate.com/suttapak/siot.h'}
+                className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+              >
+                <ArticleIcon fontSize={'small'} />
+                <span className='ml-3'>Document</span>
+              </a>
+            </li>
+            <li>
+              <a
+                onClick={() => setOpen(false)}
+                href={'https://github.com/suttapak/siot.h'}
+                className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+              >
+                <LibraryBooksIcon fontSize={'small'} />
+                <span className='ml-3'>Library</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
