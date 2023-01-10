@@ -64,3 +64,8 @@ func (r *userDb) SetRole(ctx context.Context, userId uuid.UUID, roles ...int) (u
 	err = r.db.Updates(&u).Error
 	return u, err
 }
+
+func (r *userDb) Users(ctx context.Context) (u []model.User, err error) {
+	err = r.db.WithContext(ctx).Find(&u).Error
+	return u, err
+}
