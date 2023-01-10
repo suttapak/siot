@@ -17,7 +17,7 @@ class UserBloc extends Bloc<MyEvent, MyState> {
 
     final token = await _storage.read(key: 'accessToken');
     final res = await http.get(
-        Uri.parse('http://localhost:4000/user/${event.userId}'),
+        Uri.parse('https://api.rocket-translate.com/user/${event.userId}'),
         headers: <String, String>{
           'context-type': 'application/json',
           'Authorization': 'Bearer $token'
