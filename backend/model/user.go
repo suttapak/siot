@@ -39,6 +39,15 @@ func (m *User) BeforeCreate(*gorm.DB) error {
 	return nil
 }
 
+func (m *User) BeforeUpdate(*gorm.DB) error {
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(m.Password), viper.GetInt("pw.hash.salt"))
+	if err != nil {
+		return err
+	}
+	m.Password = string(passwordHash)
+	return nil
+}
+
 func (m *User) PasswordIsCorrect(password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(m.Password), []byte(password)) == nil
 }
