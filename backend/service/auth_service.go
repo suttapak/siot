@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils/errs"
@@ -119,4 +120,22 @@ func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *
 		AccessToken: t,
 	}
 	return res, err
+}
+func (s *authService) ChangePassword(ctx context.Context, uId uuid.UUID, req *ChangePasswordRequest) error {
+	// check password
+	u, err := s.userRepo.FindById(ctx, uId)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrUnauthorized
+	}
+	if !u.PasswordIsCorrect(req.Password) {
+		return errs.ErrUnauthorized
+	}
+	_, err = s.userRepo.ChangePassword(ctx, uId, req.NewPassword)
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrInternalServerError
+	}
+
+	return nil
 }

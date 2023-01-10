@@ -14,4 +14,5 @@ type UserRepository interface {
 	SetRoleBasic(ctx context.Context, userId uuid.UUID) (u *model.User, err error)
 	SetRole(ctx context.Context, userId uuid.UUID, role ...int) (u *model.User, err error)
 	Users(ctx context.Context) (u []model.User, err error)
+	ChangePassword(ctx context.Context, uId uuid.UUID, newPwd string) (u *model.User, err error)
 }

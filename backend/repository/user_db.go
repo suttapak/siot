@@ -69,3 +69,9 @@ func (r *userDb) Users(ctx context.Context) (u []model.User, err error) {
 	err = r.db.WithContext(ctx).Find(&u).Error
 	return u, err
 }
+
+func (r *userDb) ChangePassword(ctx context.Context, uId uuid.UUID, newPwd string) (u *model.User, err error) {
+	u = &model.User{Password: newPwd}
+	err = r.db.WithContext(ctx).Where("id = ?", uId).Updates(&u).Error
+	return u, err
+}

@@ -128,6 +128,7 @@ func main() {
 	userGroup.Use(jwtWare.JWTWare)
 	userGroup.GET("", userHandler.FindUser)
 	userGroup.GET("/:userId", userHandler.FindUserById)
+	userGroup.PUT("/:userId/password", authHandler.ChangePassword)
 
 	// widget display group
 	widgetDpGroup := r.Group("widgets/displays")
