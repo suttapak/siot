@@ -19,7 +19,7 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	return &userService{userRepo}
 }
 
-func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *FindUserResponse, err error) {
+func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *UserResponse, err error) {
 	user, err := u.userRepo.FindById(ctx, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -29,10 +29,24 @@ func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
-	res, err = utils.Recast[*FindUserResponse](user)
+	res, err = utils.Recast[*UserResponse](user)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	return res, nil
+}
+
+func (u *userService) FindUsers(ctx context.Context) (res []UserResponse, err error) {
+	user, err := u.userRepo.Users(ctx)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[[]UserResponse](user)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
 }

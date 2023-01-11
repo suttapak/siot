@@ -8,14 +8,15 @@ import (
 )
 
 type UserService interface {
-	FindUser(ctx context.Context, req *FindUserRequest) (res *FindUserResponse, err error)
+	FindUser(ctx context.Context, req *FindUserRequest) (res *UserResponse, err error)
+	FindUsers(ctx context.Context) (res []UserResponse, err error)
 }
 
 type FindUserRequest struct {
 	UserId uuid.UUID
 }
 
-type FindUserResponse struct {
+type UserResponse struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`

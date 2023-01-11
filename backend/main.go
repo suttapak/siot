@@ -54,6 +54,7 @@ func main() {
 	widgetDpServ := service.NewWidgetDisplayService(widgetDisplayRepo)
 
 	// handler
+	addminUserHandler := handler.NewAdminUserHandler(userServ)
 	authHandler := handler.NewAuthHandler(authServ)
 	avatarHandler := handler.NewAvatarHandler(avatarServ)
 	boxHandler := handler.NewBoxHandler(boxServ)
@@ -69,7 +70,7 @@ func main() {
 
 	// middle ware
 	jwtWare := middleware.NewJWTWare(conf)
-	graudRole := middleware.NewGraudRole(boxMemRepo)
+	graudRole := middleware.NewGraudRole(boxMemRepo, userRepo)
 
 	r := gin.Default()
 
@@ -77,6 +78,10 @@ func main() {
 	// core
 
 	r.Use(GinMiddleware("http://localhost:3000"))
+
+	// addmin
+	addminGroup := r.Group("admin", jwtWare.JWTWare, graudRole.AdminGraud)
+	addminGroup.GET("/users", addminUserHandler.Users)
 
 	// auth
 	authGroup := r.Group("auth")
