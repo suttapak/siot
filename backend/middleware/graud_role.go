@@ -20,6 +20,29 @@ func NewGraudRole(boxMemberRepo repository.BoxMemberRepository, userRepo reposit
 	return &graudRole{boxMemberRepo, userRepo}
 }
 
+func (m *graudRole) SuperAdminGraud(ctx *gin.Context) {
+	userId, err := utils.UserId(ctx)
+	if err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	u, err := m.userRepo.FindById(ctx, userId)
+	if err != nil {
+		logs.Error(err)
+		ctx.AbortWithStatusJSON(handleError(err))
+		return
+	}
+	for _, r := range u.Roles {
+		if strings.ToLower(r.Name) == "superadmin" {
+			ctx.Next()
+			return
+		}
+	}
+	logs.Error("out of roles")
+	ctx.AbortWithStatusJSON(handleError(err))
+}
+
 func (m *graudRole) AdminGraud(ctx *gin.Context) {
 	userId, err := utils.UserId(ctx)
 	if err != nil {

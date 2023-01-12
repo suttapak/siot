@@ -50,3 +50,28 @@ func (u *userService) FindUsers(ctx context.Context) (res []UserResponse, err er
 	}
 	return res, err
 }
+
+func (u *userService) AddRoles(ctx context.Context, req *AddRolesRequest) (res *UserResponse, err error) {
+	// check user exist ?
+	user, err := u.userRepo.FindById(ctx, req.UserId)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrBadRequest
+	}
+	roleExist := false
+	// check role exist ?
+	for _, v := range user.Roles {
+		if v.ID == req.Role {
+			roleExist = true
+		}
+	}
+	if roleExist {
+		logs.Error("roles is exist")
+		return nil, errs.ErrBadRequest
+	}
+	res, err = utils.Recast[*UserResponse](user)
+	if err != nil {
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}

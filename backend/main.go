@@ -80,8 +80,9 @@ func main() {
 	r.Use(GinMiddleware("http://localhost:3000"))
 
 	// addmin
-	addminGroup := r.Group("admin", jwtWare.JWTWare, graudRole.AdminGraud)
-	addminGroup.GET("/users", addminUserHandler.Users)
+	addminGroup := r.Group("admin", jwtWare.JWTWare)
+	addminGroup.GET("/users", graudRole.AdminGraud, addminUserHandler.Users)
+	addminGroup.POST("/users/roles", graudRole.SuperAdminGraud, addminUserHandler.AddRoles)
 
 	// auth
 	authGroup := r.Group("auth")
