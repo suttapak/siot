@@ -7,10 +7,12 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"github.com/spf13/viper"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils/errs"
 	"github.com/suttapak/siot-backend/utils/logs"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -131,7 +133,13 @@ func (s *authService) ChangePassword(ctx context.Context, uId uuid.UUID, req *Ch
 	if !u.PasswordIsCorrect(req.Password) {
 		return errs.ErrUnauthorized
 	}
-	_, err = s.userRepo.ChangePassword(ctx, uId, req.NewPassword)
+
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), viper.GetInt("pw.hash.salt"))
+	if err != nil {
+		logs.Error(err)
+		return errs.ErrInternalServerError
+	}
+	_, err = s.userRepo.ChangePassword(ctx, uId, string(hashPassword))
 	if err != nil {
 		logs.Error(err)
 		return errs.ErrInternalServerError

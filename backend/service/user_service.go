@@ -69,6 +69,11 @@ func (u *userService) AddRoles(ctx context.Context, req *AddRolesRequest) (res *
 		logs.Error("roles is exist")
 		return nil, errs.ErrBadRequest
 	}
+	user, err = u.userRepo.SetRole(ctx, req.UserId, req.Role)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrBadRequest
+	}
 	res, err = utils.Recast[*UserResponse](user)
 	if err != nil {
 		return nil, errs.ErrInternalServerError
