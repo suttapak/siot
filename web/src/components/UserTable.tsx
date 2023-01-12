@@ -24,7 +24,7 @@ const columns: GridColDef[] = [
   },
   {
     field: 'roles',
-    headerName: 'บทบาท',
+    headerName: 'สิทธิ',
     description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 200,
