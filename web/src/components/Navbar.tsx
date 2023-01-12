@@ -18,6 +18,7 @@ import { GrClose } from 'react-icons/gr';
 import TokenIcon from '@mui/icons-material/Token';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import ArticleIcon from '@mui/icons-material/Article';
+import { AdminPanelSettings } from '@mui/icons-material';
 
 interface ItemProps {
   path: string;
@@ -148,6 +149,16 @@ export function NavbarComponent({ open, setOpen }: NavbarComponentProps) {
         </button>
         <div className='py-4 overflow-y-auto'>
           <ul className='space-y-2 flex-col'>
+            {auth.user && (
+              <>
+                {auth.user?.roles.filter((e) => e.name === 'admin' || e.name === 'superAdmin').length > 0 && (
+                  <Items path='/admin/dashboard' setOpen={setOpen}>
+                    <AdminPanelSettings fontSize={'small'} />
+                    <span className='ml-3'>Admin dashboard</span>
+                  </Items>
+                )}
+              </>
+            )}
             <Items path='/' setOpen={setOpen}>
               <TokenIcon fontSize={'small'} />
               <span className='ml-3'>Home</span>
