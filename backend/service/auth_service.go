@@ -6,13 +6,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
-	"github.com/spf13/viper"
 	"github.com/suttapak/siot-backend/config"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils/errs"
 	"github.com/suttapak/siot-backend/utils/logs"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -61,11 +58,6 @@ func (s *authService) Login(ctx context.Context, req *LoginRequest) (res *LoginR
 	return res, err
 }
 func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *RegisterResponse, err error) {
-	// check out in database
-	// if user is not exist
-	// first user is create set role are admin user and super admin
-
-	users, _ := s.userRepo.Users(ctx)
 	u, err := s.userRepo.FindByEmail(ctx, req.Email)
 	if err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -77,7 +69,6 @@ func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *
 		logs.Error(err)
 		return nil, errs.ErrUnauthorized
 	}
-
 	u, err = s.userRepo.Create(ctx, req.Email, req.Password, req.FirstName, req.LastName)
 	if err != nil {
 		logs.Error(err)
@@ -87,10 +78,6 @@ func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
-	}
-	// if first user set role user admin and super admin
-	if len(users) <= 0 {
-		s.userRepo.SetRole(ctx, u.ID, 1, 2, 3)
 	}
 	_, err = s.avatarRepo.Create(ctx, repository.CreateAvatarRequest{UId: u.ID})
 	if err != nil {
@@ -122,28 +109,4 @@ func (s *authService) Register(ctx context.Context, req *RegisterRequest) (res *
 		AccessToken: t,
 	}
 	return res, err
-}
-func (s *authService) ChangePassword(ctx context.Context, uId uuid.UUID, req *ChangePasswordRequest) error {
-	// check password
-	u, err := s.userRepo.FindById(ctx, uId)
-	if err != nil {
-		logs.Error(err)
-		return errs.ErrUnauthorized
-	}
-	if !u.PasswordIsCorrect(req.Password) {
-		return errs.ErrUnauthorized
-	}
-
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), viper.GetInt("pw.hash.salt"))
-	if err != nil {
-		logs.Error(err)
-		return errs.ErrInternalServerError
-	}
-	_, err = s.userRepo.ChangePassword(ctx, uId, string(hashPassword))
-	if err != nil {
-		logs.Error(err)
-		return errs.ErrInternalServerError
-	}
-
-	return nil
 }

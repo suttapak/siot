@@ -21,8 +21,8 @@ class BoxCard extends StatefulWidget {
 class _BoxCardState extends State<BoxCard> {
   @override
   void initState() {
-    context.read<UserBloc>().add(GetUserEvent(userId: widget.box.ownerId));
     super.initState();
+    context.read<UserBloc>().add(GetUserEvent(userId: widget.box.ownerId));
   }
 
   @override
@@ -42,59 +42,34 @@ class _BoxCardState extends State<BoxCard> {
           padding: const EdgeInsets.only(top: 8, bottom: 8),
           child: BlocBuilder<UserBloc, MyState>(
             builder: (context, state) {
-              if (state is StateLoading) {
-                return Stack(
-                  alignment: const Alignment(.9, .9),
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      padding:
-                          const EdgeInsets.only(top: 10, left: 20, right: 20),
-                      height: 130.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.grey[800],
-                      ),
-                      width: double.infinity,
-                      child: textInBox(context, state),
+              return Stack(
+                alignment: const Alignment(.9, .9),
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    padding:
+                        const EdgeInsets.only(top: 10, left: 20, right: 20),
+                    height: 130.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.grey[800],
                     ),
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://api.rocket-translate.com/asset/images/65c57441-7037-418e-968d-d4b4ab52e37f.png',
-                      ),
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                    ),
-                  ],
-                );
-              }
-              if (state is GetUserStateSuccess) {
-                return Stack(
-                  alignment: const Alignment(.9, .9),
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      padding:
-                          const EdgeInsets.only(top: 10, left: 20, right: 20),
-                      height: 130.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Colors.grey[800],
-                      ),
-                      width: double.infinity,
-                      child: textInBox(context, state),
-                    ),
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://api.rocket-translate.com${state.user.avatar.url}',
-                      ),
-                      radius: 40,
-                      backgroundColor: Colors.white,
-                    ),
-                  ],
-                );
-              }
-              return const SizedBox();
+                    width: double.infinity,
+                    child: textInBox(context, state),
+                  ),
+                  CircleAvatar(
+                    backgroundImage: state is GetUserStateSuccess
+                        ? NetworkImage(
+                            'http://localhost:4000${state.user.avatar.url}',
+                          )
+                        : const NetworkImage(
+                            'http://localhost:4000/asset/images/siot-avatar.png',
+                          ),
+                    radius: 40,
+                    backgroundColor: Colors.white,
+                  ),
+                ],
+              );
             },
           ),
         ));

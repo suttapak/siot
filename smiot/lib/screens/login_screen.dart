@@ -34,14 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: Colors.white,
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            buildForm(),
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: ElevatedButton(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              buildForm(),
+              ElevatedButton(
                 onPressed: (() {
                   if (!(key.currentState?.validate() ?? false)) {
                     return;
@@ -51,59 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   context
                       .read<AuthBloc>()
                       .add(LoginEvet(email: email, password: password));
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text("กำลังเข้าสู่ระบบ..."),
-                    action: SnackBarAction(
-                      label: '',
-                      onPressed: () {
-                        // Some code to undo the change.
-                      },
-                    ),
-                  ));
                 }),
-                child: BlocConsumer<AuthBloc, MyState>(
-                  builder: ((context, state) {
-                    if (state is StateLoading) {
-                      return Text(state.toString());
-                    }
-                    if (state is LoginStateSuccess) {
-                      const Text('กำลังเข้าสู่ระบบ');
-                    }
-
-                    return const Text('เข้าสู่ระบบ');
-                  }),
-                  listener: (context, state) {
-                    if (state is LoginStateSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('ล็อคอินสำเร็จ'),
-                          action: SnackBarAction(
-                            label: '',
-                            onPressed: () {
-                              // Some code to undo the change.
-                            },
-                          ),
-                        ),
-                      );
-                      return;
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.red.shade400,
-                        content: Text(state.toString()),
-                        action: SnackBarAction(
-                          label: '',
-                          onPressed: () {
-                            // Some code to undo the change.
-                          },
-                        ),
-                      ),
-                    );
-                  },
+                child: BlocBuilder<AuthBloc, MyState>(
+                  builder: ((context, state) => state is StateLoading
+                      ? Text(state.toString())
+                      : const Text('เข้าสู่ระบบ')),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -130,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
           TextFormField(
-            obscureText: true,
             decoration: const InputDecoration(labelText: 'password'),
             keyboardType: TextInputType.visiblePassword,
             onSaved: (value) => password = value ??= '',

@@ -1,6 +1,5 @@
 import { getUserToken } from '../libs';
 import { DisplayType } from '../types/Display';
-import { ResponseOkType } from '../types/ResponseOk';
 import { apiClient } from './Api';
 
 export const GetDisplays = async (boxId: string) => {
@@ -44,14 +43,6 @@ export type UpdateDisplayDto = {
 
 export const UpdateDisplayDeliver = async (boxId: string, dId: number, body: UpdateDisplayDto) => {
   const res = await apiClient.put<DisplayType>(`boxes/${boxId}/displays/${dId}`, JSON.stringify(body), {
-    headers: {
-      Authorization: `Bearer ${getUserToken()}`,
-    },
-  });
-  return res.data;
-};
-export const DeleteDisplayDeliver = async (boxId: string, dId: number) => {
-  const res = await apiClient.delete<ResponseOkType>(`boxes/${boxId}/displays/${dId}`, {
     headers: {
       Authorization: `Bearer ${getUserToken()}`,
     },
