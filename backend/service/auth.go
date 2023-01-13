@@ -2,11 +2,19 @@ package service
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type AuthService interface {
 	Login(ctx context.Context, req *LoginRequest) (res *LoginRespose, err error)
 	Register(ctx context.Context, req *RegisterRequest) (res *RegisterResponse, err error)
+	ChangePassword(ctx context.Context, uId uuid.UUID, req *ChangePasswordRequest) error
+}
+
+type ChangePasswordRequest struct {
+	Password    string `json:"password"`
+	NewPassword string `json:"newPassword"`
 }
 
 // login request
