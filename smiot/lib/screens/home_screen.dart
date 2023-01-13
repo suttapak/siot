@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smiot/bloc/auth_bloc.dart';
 import 'package:smiot/bloc/box_bloc.dart';
 import 'package:smiot/bloc/common_bloc.dart';
-import 'package:smiot/screens/splash_screen.dart';
+import 'package:smiot/widgets/splash.dart';
 import 'package:smiot/widgets/box_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,12 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<BoxBloc, MyState>(
           builder: (context, state) {
             if (state is StateLoading) {
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  child: const CircularProgressIndicator(),
-                ),
-              );
+              const Splash();
             } else if (state is GetBoxesStateSuccess) {
               return ListView.builder(
                 itemCount: state.boxes.length,

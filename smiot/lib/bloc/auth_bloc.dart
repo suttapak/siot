@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 class AuthBloc extends Bloc<MyEvent, MyState> {
   static const _accessTokenKey = 'accessToken';
+
   final _storage = const FlutterSecureStorage();
 
   AuthBloc() : super(StateInitialized()) {
@@ -19,11 +20,12 @@ class AuthBloc extends Bloc<MyEvent, MyState> {
       {required String email, required String password}) async {
     emit(StateLoading());
 
-    var res = await http.post(Uri.parse('http://127.0.0.1:4000/auth/login'),
+    var res = await http.post(
+        Uri.parse('https://api.rocket-translate.com/auth/login'),
         body: jsonEncode({'email': email, 'password': password}));
 
     if (res.statusCode != 200) {
-      emit(StateError(message: res.statusCode.toString()));
+      emit(StateError(message: "อีเมล์หรือรหัสผ่านไม่ถูกต้อง"));
       return;
     }
 

@@ -19,7 +19,7 @@ func NewUserService(userRepo repository.UserRepository) UserService {
 	return &userService{userRepo}
 }
 
-func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *FindUserResponse, err error) {
+func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *UserResponse, err error) {
 	user, err := u.userRepo.FindById(ctx, req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -29,10 +29,54 @@ func (u *userService) FindUser(ctx context.Context, req *FindUserRequest) (res *
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
-	res, err = utils.Recast[*FindUserResponse](user)
+	res, err = utils.Recast[*UserResponse](user)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.ErrInternalServerError
 	}
 	return res, nil
+}
+
+func (u *userService) FindUsers(ctx context.Context) (res []UserResponse, err error) {
+	user, err := u.userRepo.Users(ctx)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	res, err = utils.Recast[[]UserResponse](user)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
+}
+
+func (u *userService) AddRoles(ctx context.Context, req *AddRolesRequest) (res *UserResponse, err error) {
+	// check user exist ?
+	user, err := u.userRepo.FindById(ctx, req.UserId)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrBadRequest
+	}
+	roleExist := false
+	// check role exist ?
+	for _, v := range user.Roles {
+		if v.ID == req.Role {
+			roleExist = true
+		}
+	}
+	if roleExist {
+		logs.Error("roles is exist")
+		return nil, errs.ErrBadRequest
+	}
+	user, err = u.userRepo.SetRole(ctx, req.UserId, req.Role)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrBadRequest
+	}
+	res, err = utils.Recast[*UserResponse](user)
+	if err != nil {
+		return nil, errs.ErrInternalServerError
+	}
+	return res, err
 }

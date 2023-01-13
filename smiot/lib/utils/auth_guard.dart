@@ -4,7 +4,7 @@ import 'package:smiot/bloc/auth_bloc.dart';
 import 'package:smiot/bloc/common_bloc.dart';
 import 'package:smiot/screens/home_screen.dart';
 import 'package:smiot/screens/login_screen.dart';
-import 'package:smiot/screens/splash_screen.dart';
+import 'package:smiot/widgets/splash.dart';
 
 class AuthGuard extends StatefulWidget {
   final Widget child;
@@ -20,7 +20,6 @@ class AuthGuard extends StatefulWidget {
 class _AuthGuardState extends State<AuthGuard> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     context.read<AuthBloc>().add(GetTokenEvent());
   }
@@ -52,7 +51,7 @@ class _AuthGuardState extends State<AuthGuard> {
           child: child,
         );
       },
-      onGenerateRoute: ((_) => SplashPage.route()),
+      onGenerateRoute: ((_) => LoginScreen.route()),
     );
   }
 }
