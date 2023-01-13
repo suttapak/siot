@@ -1,16 +1,18 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import moment from 'moment';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import BoxContainer from '../components/BoxContainer';
 import { FindBox } from '../delivery/Box';
-import { getControls } from '../delivery/Control';
-import { GetDisplays } from '../delivery/DIsplay';
+import { DeleteControlDeliver, getControls } from '../delivery/Control';
+import { DeleteDisplayDeliver, GetDisplays } from '../delivery/DIsplay';
 import 'moment/locale/th';
-import { FiEdit } from 'react-icons/fi';
 import { Modal } from '../components/Modal';
 import { UpdateControlForm } from '../form/UpdateControlForm';
 import { UpdateDisplayForm } from '../form/UpdateDisplayForm';
+import { Box, CircularProgress, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Edit from '@mui/icons-material/Edit';
 moment.locale('th');
 type Props = {};
 
@@ -25,6 +27,11 @@ const BoxPage = (props: Props) => {
   const [openModalCt, setOpenModalCt] = React.useState<number | null | boolean>(null);
   const [openModalDp, setOpenModalDp] = React.useState<number | null | boolean>(null);
 
+  const { mutate: muteateDp, isLoading: isLoadingDp } = useMutation(
+    async ({ boxId, cId }: { boxId: string; cId: number }) => await DeleteDisplayDeliver(boxId, cId)
+  );
+  const { mutate, isLoading } = useMutation(async ({ boxId, cId }: { boxId: string; cId: number }) => await DeleteControlDeliver(boxId, cId));
+  const queryClient = useQueryClient();
   return (
     <React.Fragment>
       <BoxContainer>
@@ -79,13 +86,25 @@ const BoxPage = (props: Props) => {
                         <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
                         <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
                         <td className='border-b w-8 border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-900 dark:text-gray-400'>
-                          <button
-                            onClick={() => setOpenModalCt(value.id)}
-                            type='button'
-                            className='border  w-7 h-7 rounded-md hover:bg-yellow-300 flex justify-center items-center hover:text-black'
-                          >
-                            <FiEdit size={20} />
-                          </button>
+                          <Box display={'flex'}>
+                            <IconButton onClick={() => setOpenModalCt(value.id)}>
+                              <Edit />
+                            </IconButton>
+                            <IconButton
+                              onClick={() =>
+                                mutate(
+                                  { boxId: value.BoxId, cId: value.id },
+                                  {
+                                    onSuccess: () => {
+                                      queryClient.invalidateQueries(['controls']);
+                                    },
+                                  }
+                                )
+                              }
+                            >
+                              {!isLoading ? <DeleteIcon /> : <CircularProgress size={22} />}
+                            </IconButton>
+                          </Box>
                         </td>
                       </tr>
                       <Modal open={openModalCt === value.id} setOpen={setOpenModalCt}>
@@ -124,13 +143,25 @@ const BoxPage = (props: Props) => {
                         <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.key}</td>
                         <td className='border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-500 dark:text-gray-400'>{value.description}</td>
                         <td className='border-b w-8 border-slate-100 dark:border-slate-700 p-4 pl-8 text-gray-900 dark:text-gray-400'>
-                          <button
-                            onClick={() => setOpenModalDp(value.id)}
-                            type='button'
-                            className='border  w-7 h-7 rounded-md hover:bg-yellow-300 flex justify-center items-center hover:text-black'
-                          >
-                            <FiEdit size={20} />
-                          </button>
+                          <Box display={'flex'}>
+                            <IconButton onClick={() => setOpenModalDp(value.id)}>
+                              <Edit />
+                            </IconButton>
+                            <IconButton
+                              onClick={() =>
+                                muteateDp(
+                                  { boxId: value.BoxId, cId: value.id },
+                                  {
+                                    onSuccess: () => {
+                                      queryClient.invalidateQueries(['displays']);
+                                    },
+                                  }
+                                )
+                              }
+                            >
+                              {!isLoadingDp ? <DeleteIcon /> : <CircularProgress size={22} />}
+                            </IconButton>
+                          </Box>
                         </td>
                       </tr>
                       <Modal open={openModalDp === value.id} setOpen={setOpenModalDp}>

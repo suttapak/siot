@@ -83,6 +83,28 @@ export const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
   return children;
 };
 
+export const RequireAdminOrSuperAdmin: React.FC<RequireAuthProps> = ({ children }) => {
+  const auth = useAuth();
+  const location = useLocation();
+
+  let adminOrSuperAdmin = false;
+  if (!auth.user) {
+    return <Navigate to={'/signin'} state={{ form: location }} replace={true} />;
+  }
+
+  for (let r of auth.user.roles) {
+    if (r.name.toLowerCase() === 'admin' || r.name.toLowerCase() === 'superadmin') {
+      adminOrSuperAdmin = true;
+    }
+  }
+
+  if (!adminOrSuperAdmin) {
+    return <Navigate to={'/signin'} state={{ form: location }} replace={true} />;
+  }
+
+  return children;
+};
+
 export const NotAuth: React.FC<RequireAuthProps> = ({ children }) => {
   const auth = useAuth();
   const location = useLocation();

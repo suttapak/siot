@@ -8,6 +8,7 @@ import React from 'react';
 import { UpdateBoxPopupDetail } from '../form/UpdateBoxForm';
 import Menu from './Menu';
 import { DelBoxDeliver } from '../form/DelBoxForm';
+import { Avatar } from '@mui/material';
 
 export const BoxCard = ({ box }: { box: Box }) => {
   const { data } = useQuery([box.ownerId], async () => await getUserById(box.ownerId));
@@ -64,7 +65,11 @@ export const BoxCard = ({ box }: { box: Box }) => {
         <div className='w-16 h-16 bg-white p-1 rounded-full overflow-hidden absolute bottom-0 right-5 flex justify-center items-center'>
           <div className='w-full h-full rounded-full overflow-hidden'>
             {data?.avatar && (
-              <img src={process.env.REACT_APP_SERVER_URL_PATH + String(data?.avatar.url.substring(1))} alt={data?.avatar.title} className='w-full ' />
+              <Avatar
+                src={process.env.REACT_APP_SERVER_URL_PATH + String(data?.avatar.url.substring(1))}
+                alt={data?.avatar.title}
+                sx={{ width: '100%', height: '100%' }}
+              />
             )}
           </div>
         </div>

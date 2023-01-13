@@ -64,3 +64,14 @@ func (r *userDb) SetRole(ctx context.Context, userId uuid.UUID, roles ...int) (u
 	err = r.db.Updates(&u).Error
 	return u, err
 }
+
+func (r *userDb) Users(ctx context.Context) (u []model.User, err error) {
+	err = r.db.WithContext(ctx).Preload(clause.Associations).Find(&u).Error
+	return u, err
+}
+
+func (r *userDb) ChangePassword(ctx context.Context, uId uuid.UUID, newPwd string) (u *model.User, err error) {
+	u = &model.User{Password: newPwd}
+	err = r.db.WithContext(ctx).Where("id = ?", uId).Updates(&u).Error
+	return u, err
+}

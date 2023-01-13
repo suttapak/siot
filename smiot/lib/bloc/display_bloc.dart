@@ -18,7 +18,8 @@ class DisplayBloc extends Bloc<MyEvent, MyState> {
       emit(StateLoading());
       final token = await _storage.read(key: 'accessToken');
       final res = await http.get(
-        Uri.parse('http://127.0.0.1:4000/boxes/${event.boxId}/displays'),
+        Uri.parse(
+            'https://api.rocket-translate.com/boxes/${event.boxId}/displays'),
         headers: <String, String>{
           'context-type': 'application/json',
           'Authorization': 'Bearer $token'
