@@ -10,7 +10,6 @@ import 'package:smiot/widgets/line_chart_display.dart';
 import 'package:smiot/widgets/number_button.dart';
 import 'package:smiot/widgets/number_display.dart';
 import 'package:smiot/widgets/slider_control.dart';
-import 'package:smiot/widgets/splash.dart';
 import 'package:smiot/widgets/switch.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -38,9 +37,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   var connectState = false;
 
   _connectSocket() {
-    _socket.io
-      ..disconnect()
-      ..connect();
     _socket.onConnect((data) {
       if (mounted) {
         setState(() {
@@ -50,9 +46,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     _socket.onConnectError((data) {
       if (mounted) {
-        _socket.io
-          ..disconnect()
-          ..connect();
         setState(() {
           connectState = false;
         });
@@ -60,9 +53,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     _socket.onDisconnect((data) {
       if (mounted) {
-        _socket.io
-          ..disconnect()
-          ..connect();
         setState(() {
           connectState = false;
         });
@@ -73,8 +63,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    //Important: If your server is running on localhost and you are testing your app on Android then replace http://localhost:3000 with http://10.0.2.2:3000
     _socket = IO.io(
-      'wss://api.rocket-translate.com/',
+      'ws://localhost:4000/',
       IO.OptionBuilder().setTransports(['websocket']).build(),
     );
     _connectSocket();
@@ -85,6 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void dispose() {
     super.dispose();
+    _socket.close();
   }
 
   @override
@@ -128,9 +120,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   )
                                 : const SizedBox()
                 ]);
-              }
-              if (state is StateLoading) {
-                return const Splash();
               } else {
                 return const SizedBox();
               }
@@ -167,9 +156,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       )
                                     : const SizedBox()
                 ]);
-              }
-              if (state is StateLoading) {
-                return const Splash();
               } else {
                 return const SizedBox();
               }

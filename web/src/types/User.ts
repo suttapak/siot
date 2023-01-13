@@ -1,5 +1,4 @@
 import { AvatarType } from './Avatar';
-import { Box } from './Box';
 import { Role } from './Role';
 import { Setting } from './Setting';
 
@@ -12,7 +11,7 @@ export interface User {
   email: string;
   settingId: number;
   roles: Role[];
-  box: Box[];
+  box: any[];
   setting: Setting;
   avatar: AvatarType;
 }

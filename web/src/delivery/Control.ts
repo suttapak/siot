@@ -1,6 +1,5 @@
 import { getUserToken } from '../libs';
 import { Control } from '../types/Control';
-import { ResponseOkType } from '../types/ResponseOk';
 import { apiClient } from './Api';
 
 export const getControls = async (boxId: string) => {
@@ -44,15 +43,6 @@ export type UpdateControlDto = {
 
 export const UpdateControlDeliver = async (boxId: string, cId: number, body: UpdateControlDto) => {
   const res = await apiClient.put<Control>(`boxes/${boxId}/controls/${cId}`, JSON.stringify(body), {
-    headers: {
-      Authorization: `Bearer ${getUserToken()}`,
-    },
-  });
-  return res.data;
-};
-
-export const DeleteControlDeliver = async (boxId: string, cId: number) => {
-  const res = await apiClient.delete<ResponseOkType>(`boxes/${boxId}/controls/${cId}`, {
     headers: {
       Authorization: `Bearer ${getUserToken()}`,
     },

@@ -111,7 +111,7 @@ export function BoxDashBoard() {
             isDroppable={modeEdit}
             isDraggable={modeEdit}
             isResizable={false}
-            cols={{ lg: 10, md: 10, sm: 10, xs: 2, xxs: 2 }}
+            cols={{ lg: 10, md: 9, sm: 6, xs: 4, xxs: 2 }}
             breakpoints={{ lg: 1024, md: 768, sm: 640, xs: 480, xxs: 0 }}
             compactType={'vertical'}
             className='layout bg-white rounded-lg   min-h-[480px]'
