@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Container } from './components';
-import { NotAuth, ProviderAuth, RequireAdminOrSuperAdmin, RequireAuth } from './hooks';
+import { NotAuth, ProviderAuth, RequireAuth } from './hooks';
 import { ProviderToast } from './hooks/useToast';
 import { BoxDashBoard, SignIn, SignUp } from './pages';
 import { HomePage } from './pages/Home.Page';
@@ -11,7 +11,6 @@ import BoxSecret from './pages/BoxSecretPage';
 import BoxMemberPage from './pages/BoxMemberPage';
 import { ProviderSokcetIO } from './hooks/useSocketIO';
 import ProfilePage from './pages/ProfilePage';
-import AdminDashboard from './pages/AdminDashboard';
 
 const queryClient = new QueryClient();
 
@@ -86,14 +85,6 @@ function App() {
                       <NotAuth>
                         <SignUp />
                       </NotAuth>
-                    }
-                  />
-                  <Route
-                    path='admin/dashboard'
-                    element={
-                      <RequireAdminOrSuperAdmin>
-                        <AdminDashboard />
-                      </RequireAdminOrSuperAdmin>
                     }
                   />
                 </Routes>
