@@ -20,7 +20,7 @@ const AdminDashboard = (props: Props) => {
       <Grid container spacing={1}>
         {user && (
           <>
-            {user.roles.find((v) => v.name.toLowerCase() == 'superadmin') && (
+            {user.roles.find((v) => v.name.toLowerCase() === 'superadmin') && (
               <Grid item xs={6}>
                 <AddRole />
               </Grid>

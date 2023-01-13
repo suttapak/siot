@@ -102,7 +102,7 @@ const DLineChart = (props: Props) => {
 
   React.useEffect(() => {
     setWidth(refWidth.current?.clientWidth ? refWidth.current?.clientWidth : 300);
-  }, [refWidth]);
+  }, [refWidth, refWidth.current?.clientWidth]);
 
   if (isLoading || !state) {
     return (

@@ -3,7 +3,7 @@ import Menu from '../components/Menu';
 import { Modal } from '../components/Modal';
 import { UpdateAvatarForm } from '../form/Avatar';
 import { useAuth } from '../hooks';
-import { Box, Paper } from '@mui/material';
+import { Avatar, Box, Paper } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -31,7 +31,14 @@ const ProfilePage = (props: Props) => {
                   onClick={() => setOpenMenu(!openMenu)}
                   className='absolute cursor-pointer top-0 left-0 w-full h-full z-20 hover:opacity-20 opacity-0 bg-gray-300'
                 ></div>
-                <img className='relative z-10' src={process.env.REACT_APP_SERVER_URL + '' + user?.avatar.url} alt={'' + user?.avatar.title} />
+                <Avatar
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                  src={process.env.REACT_APP_SERVER_URL + '' + user?.avatar.url}
+                  alt={'' + user?.avatar.title}
+                />
               </div>
               <Menu position='center' open={openMenu} setOpen={setOpenMenu}>
                 <li className='px-3 w-full py-2 cursor-pointer  hover:bg-gray-200'>
