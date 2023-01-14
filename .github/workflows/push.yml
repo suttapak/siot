@@ -10,4 +10,4 @@ jobs:
       - name: Start Mosquitto and Database
         run: docker-compose up -d mosquitto db
       - name: Start Backend and Frontend
-        run: dokcer-compose up -d backend frontend
+        run: docker-compose up -d backend frontend
