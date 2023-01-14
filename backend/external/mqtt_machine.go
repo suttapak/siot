@@ -2,8 +2,8 @@ package external
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -47,16 +47,16 @@ func NewMQTTMachine(client mqtt.Client,
 }
 
 func (m *mqttMachine) MQTTMachine() {
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 	ctx := context.Background()
 	t := m.client.Subscribe("#", 0, func(c mqtt.Client, msg mqtt.Message) {
 
-		body := MqttMessage{}
-		err := json.Unmarshal(msg.Payload(), &body)
+		str := string(msg.Payload())
+		data, err := strconv.ParseFloat(str, 64)
 		if err != nil {
-			logs.Error(err)
 			return
 		}
+
 		topic, key := m.xTopic(msg)
 		canSub, err := m.canSubRepo.GetCanSubByTopic(ctx, topic)
 		if err != nil {
@@ -72,15 +72,15 @@ func (m *mqttMachine) MQTTMachine() {
 		year, month, day := time.Now().Date()
 		label := fmt.Sprintf("%v %v %v", day, month, year)
 
-		for _, con := range control {
-			if len(con.ControlData) < 1 {
-				m.conDataRepo.Crate(ctx, con.ID, body.Value, label)
-				continue
-			}
-			if con.ControlData[len(con.ControlData)-1].Data != body.Value {
-				m.conDataRepo.Crate(ctx, con.ID, body.Value, label)
-			}
+		now := time.Now()
 
+		if compareTime(now, control, data) {
+			return
+		}
+
+		for _, con := range control {
+			m.conDataRepo.Crate(ctx, con.ID, data, label)
+			continue
 		}
 
 		display, err := m.disRepo.FindDisplaysByKey(ctx, canSub.BoxId, key)
@@ -91,14 +91,8 @@ func (m *mqttMachine) MQTTMachine() {
 
 		// TODO redis
 		for _, dis := range display {
-			if len(dis.DisplayData) < 1 {
-				m.disDataRepo.Crate(ctx, dis.ID, body.Value, label)
-				continue
-			}
-			if dis.DisplayData[len(dis.DisplayData)-1].Data != body.Value {
-				m.disDataRepo.Crate(ctx, dis.ID, body.Value, label)
-			}
-
+			m.disDataRepo.Crate(ctx, dis.ID, data, label)
+			continue
 		}
 		var cData []model.ControlData
 		if len(control) != 0 {
@@ -123,7 +117,7 @@ func (m *mqttMachine) MQTTMachine() {
 			logs.Error(err)
 			return
 		}
-		m.sv.BroadcastToRoom("", canSub.CanSubscribe+"/"+key, canSub.CanSubscribe+"/"+key, res)
+		defer m.sv.BroadcastToRoom("", canSub.CanSubscribe+"/"+key, canSub.CanSubscribe+"/"+key, res)
 	})
 
 	go func() {
@@ -140,4 +134,8 @@ func (m *mqttMachine) xTopic(msg mqtt.Message) (topic, key string) {
 		return "", ""
 	}
 	return slices[0], slices[1]
+}
+
+func compareTime(now time.Time, c []model.Control, data float64) bool {
+	return !now.After(c[0].ControlData[len(c[0].ControlData)-1].CreatedAt.Add(1*time.Second)) && c[0].ControlData[len(c[0].ControlData)-1].Data == data
 }
