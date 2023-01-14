@@ -35,7 +35,7 @@ const BoxPage = (props: Props) => {
   return (
     <React.Fragment>
       <BoxContainer>
-        <div className='px-16 lg:px-56 pr-3  w-full relative -z-0 '>
+        <div className='px-16 lg:px-48 w-full relative -z-0 '>
           <div className='relative w-full mt-2'>
             <div className='absolute -z-0 top-0 w-full left-0 rounded-lg h-full bg-gray-200 overflow-hidden opacity-90'>
               <img src='/iot.jpeg' alt='iot' className='w-full h-auto  block' />
@@ -60,7 +60,7 @@ const BoxPage = (props: Props) => {
             </div>
           </div>
         </div>
-        <div className='px-16 lg:px-56 pr-3  w-full '>
+        <div className='px-16 lg:px-48 w-full '>
           <div className='w-full px-8  bg-white mt-2 py-5 rounded-lg mb-4 '>
             <h2 className='text-lg text-gray-600 px-6 mb-4'>Control data table.</h2>
             <hr className='mb-4' />
@@ -117,7 +117,7 @@ const BoxPage = (props: Props) => {
             </table>
           </div>
         </div>
-        <div className='px-16 lg:px-56 pr-3  w-full '>
+        <div className='px-16 lg:px-48 w-full '>
           <div className='w-full px-8  bg-white mt-2 py-5 rounded-lg '>
             <h2 className='text-lg text-gray-600 px-6 mb-4'>Display data table.</h2>
             <hr className='mb-4' />

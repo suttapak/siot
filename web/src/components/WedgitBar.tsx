@@ -15,10 +15,10 @@ export const WedgitBar = (props: Props) => {
   const { modeControl, setModeControl } = props;
 
   return (
-    <div className='fixed bottom-0 right-0 max-w-[220px] w-full rounded-lg  h-screen overflow-x-hidden'>
+    <div className='max-w-[220px] w-full h-screen overflow-x-hidden'>
       {/* body */}
-      <div className='w-full h-full pt-16 pb-2'>
-        <div className='w-full bg-white rounded-lg rounded-tr-none rounded-br-none h-full shadow relative'>
+      <div className='w-full h-full pb-2'>
+        <div className='w-full bg-whiteh-full relative'>
           {/* title  */}
 
           <div className='w-full h-auto flex items-center space-x-1 px-2 pt-2 border-b pb-1'>

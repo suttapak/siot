@@ -1,8 +1,17 @@
 import React from 'react';
-import { useToast } from '../hooks/useToast';
-import Footer from './Footer';
+import Box from '@mui/material/Box';
 import { NavbarComponent } from './Navbar';
-import { Toast } from './Toast';
+import { styled } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+
+const DrawerHeader = styled(Toolbar)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+
+  // necessary for content to be below app bar
+}));
 
 interface Props {
   children: JSX.Element;
@@ -10,19 +19,14 @@ interface Props {
 
 export function Container({ children }: Props): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
-  const toast = useToast();
   return (
     <>
-      <NavbarComponent open={open} setOpen={setOpen} />
-      <div
-        className={`bg-gray-100 pb-12 min-h-screen h-full ${
-          open ? 'pl-64' : 'pl-0 '
-        } flex-col justify-center items-center transition-all text-xs md:text-sm pt-14`}
-      >
-        <div className='h-max'>{children}</div>
-      </div>
-      <Footer />
-      <Toast message={toast.message} />
+      <NavbarComponent open={open} setOpen={setOpen}>
+        <Box component='main' sx={{ flexGrow: 1, p: 3, backgroundColor: '#D3D3D3', minHeight: '100vh' }}>
+          <DrawerHeader variant='dense' />
+          {children}
+        </Box>
+      </NavbarComponent>
     </>
   );
 }

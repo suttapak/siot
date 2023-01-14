@@ -32,8 +32,8 @@ export const UpdateAvatarForm: React.FC<Props> = (props: Props) => {
     >
       {/* title */}
       <div className='w-full pb-2'>
-        <h1 className='text-4xl font-bold text-center py-10'>SIOT</h1>
-        <h3 className='text-xl font-bold text-center'>Update Avatar</h3>
+        <h1 className='text-4xl font-bold text-center py-10'>Matee Kloud</h1>
+        <h3 className='text-xl font-bold text-center'>เปลี่ยนรูปโปรไฟล์</h3>
       </div>
       <hr />
       {/* body */}
@@ -48,7 +48,7 @@ export const UpdateAvatarForm: React.FC<Props> = (props: Props) => {
       </div>
       <div className='py-4'>
         <button type='submit' className='text-lg font-bold flex items-center px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors'>
-          <BsStack /> <span className='pl-2'>Create Box</span>{' '}
+          <BsStack /> <span className='pl-2'>ยืนยันเปลี่ยนรูปโปรไฟล์</span>{' '}
           {isLoading && (
             <div role='status' className='pl-2'>
               <ImSpinner9 className='mr-2 w-6 h-6 text-gray-200 animate-spin fill-blue-600 dark:to-gray-600' />

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import Drawer from '@mui/material/Drawer';
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineWrenchScrewdriver } from 'react-icons/hi2';
 import { useParams } from 'react-router';
@@ -21,7 +22,20 @@ import { CButtonNumber } from '../components/control/CButtonNumber';
 import { CSlider } from '../components/control/CSlider';
 import { CSwitch } from '../components/control/CSwitch';
 
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { styled } from '@mui/material/styles';
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const DrawerHeader = styled(Toolbar)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  justifyContent: 'flex-start',
+}));
 
 export function BoxDashBoard() {
   const { boxId } = useParams();
@@ -33,6 +47,7 @@ export function BoxDashBoard() {
 
   // mode - edit and power
   const [modeEdit, setModeEdit] = React.useState(false);
+
   const [controlMode, setControlMode] = React.useState(false);
 
   const [widgetId, setWidgetId] = React.useState<number>(0);
@@ -70,10 +85,36 @@ export function BoxDashBoard() {
     })
   );
 
+  const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (event && event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
+      return;
+    }
+
+    setModeEdit(false);
+  };
+
   return (
     <React.Fragment>
       <BoxContainer>
-        {modeEdit && (
+        <Drawer
+          sx={{
+            width: 207,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: 207,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant='persistent'
+          anchor={'right'}
+          open={modeEdit}
+          onClose={toggleDrawer}
+        >
+          <DrawerHeader variant='dense' />
+          <DrawerHeader variant='dense'>
+            <IconButton onClick={() => setModeEdit(false)}>{!modeEdit ? <ChevronLeftIcon /> : <ChevronRightIcon />}</IconButton>
+          </DrawerHeader>
+
           <WedgitBar
             canSub={'' + box?.canSub.canSubscribe}
             setWidgetId={setWidgetId}
@@ -82,8 +123,9 @@ export function BoxDashBoard() {
             open={modeEdit}
             setOpen={setModeEdit}
           />
-        )}
-        <div className='px-16 lg:px-56 pr-3  w-full '>
+        </Drawer>
+
+        <div className={`px-16 lg:px-48 w-full `}>
           {/* title  */}
           <div className='w-full h-8 px-6 flex items-center bg-white mt-2 py-5 rounded-lg mb-4 '>
             <h3 className='w-full text-base font-medium flex-1'>{box?.name}</h3>
@@ -114,7 +156,7 @@ export function BoxDashBoard() {
             cols={{ lg: 10, md: 10, sm: 10, xs: 2, xxs: 2 }}
             breakpoints={{ lg: 1024, md: 768, sm: 640, xs: 480, xxs: 0 }}
             compactType={'vertical'}
-            className='layout bg-white rounded-lg   min-h-[480px]'
+            className='layout bg-white rounded-lg w-full min-h-[590px]'
             layouts={{
               lg: layoutData,
             }}
