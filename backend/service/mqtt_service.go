@@ -2,12 +2,10 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	socketio "github.com/googollee/go-socket.io"
-	"github.com/suttapak/siot-backend/external"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/utils/logs"
 )
@@ -43,15 +41,11 @@ func (s *wsService) RunPub(ctx context.Context, req PublishMessageRequest) {
 		logs.Error(err)
 		return
 	}
-	msg := external.MqttMessage{
-		Value: req.Data,
-	}
-	msgByte, err := json.Marshal(msg)
-	if err != nil {
-		logs.Error(err)
-		return
-	}
-	t := s.mqtt.Publish(fmt.Sprintf("%v/%v", b.CanPub.CanPublish, req.Key), 1, false, msgByte)
+
+	str := fmt.Sprintf("%f", req.Data)
+	data := []byte(str)
+
+	t := s.mqtt.Publish(fmt.Sprintf("%v/%v", b.CanPub.CanPublish, req.Key), 0, false, data)
 	if t.Error() != nil {
 		logs.Error(t.Error())
 		return
