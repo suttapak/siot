@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import Drawer from '@mui/material/Drawer';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { FaEye } from 'react-icons/fa';
 import { HiOutlineWrenchScrewdriver } from 'react-icons/hi2';
 import { useParams } from 'react-router';
@@ -27,6 +28,8 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
+import { ParseLayoutDto, UpdateLayoutDeliver } from '../delivery/Layout';
+import { Box, Typography } from '@mui/material';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -54,7 +57,16 @@ export function BoxDashBoard() {
   const [layout, setLayout] = React.useState<ReactGridLayout.Layout>();
 
   const [open, setOpen] = React.useState(false);
-
+  const matches = useMediaQuery('(min-width:1025px)');
+  if (!matches) {
+    return (
+      <>
+        <Box>
+          <Typography>This screen size is not supported. Please resize your browser to be at least 1025px wide.</Typography>
+        </Box>
+      </>
+    );
+  }
   if (!controls || !displays) {
     return null;
   }
@@ -92,6 +104,10 @@ export function BoxDashBoard() {
 
     setModeEdit(false);
   };
+
+  if (!box) {
+    return null;
+  }
 
   return (
     <React.Fragment>
@@ -152,7 +168,9 @@ export function BoxDashBoard() {
             onDrop={onDrop}
             isDroppable={modeEdit}
             isDraggable={modeEdit}
-            isResizable={false}
+            onDragStop={(l) => UpdateLayoutDeliver(box.id, ParseLayoutDto(l))}
+            onResizeStop={(l) => UpdateLayoutDeliver(box.id, ParseLayoutDto(l))}
+            isResizable={modeEdit}
             cols={{ lg: 10, md: 10, sm: 10, xs: 2, xxs: 2 }}
             breakpoints={{ lg: 1024, md: 768, sm: 640, xs: 480, xxs: 0 }}
             compactType={'vertical'}
