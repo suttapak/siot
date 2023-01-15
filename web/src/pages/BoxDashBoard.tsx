@@ -27,6 +27,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
+import { ParseLayoutDto, UpdateLayoutDeliver } from '../delivery/Layout';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -93,6 +94,10 @@ export function BoxDashBoard() {
     setModeEdit(false);
   };
 
+  if (!box) {
+    return null;
+  }
+
   return (
     <React.Fragment>
       <BoxContainer>
@@ -152,6 +157,7 @@ export function BoxDashBoard() {
             onDrop={onDrop}
             isDroppable={modeEdit}
             isDraggable={modeEdit}
+            onDragStop={(l) => UpdateLayoutDeliver(box.id, ParseLayoutDto(l))}
             isResizable={false}
             cols={{ lg: 10, md: 10, sm: 10, xs: 2, xxs: 2 }}
             breakpoints={{ lg: 1024, md: 768, sm: 640, xs: 480, xxs: 0 }}

@@ -48,6 +48,7 @@ func main() {
 	controlServ := service.NewControlService(boxRepo, controlRepo, layoutRepo, widgetControlRepo)
 	displayDataServ := service.NewDisplayDataService(displayRepo, displayDataRepo)
 	displayServ := service.NewDisplayService(boxRepo, displayRepo, layoutRepo, widgetDisplayRepo)
+	layoutServ := service.NewLayoutService(layoutRepo)
 	mqttServ := service.NewMqttAuthService(boxRepo, canSubRepo, canPubRepo, userRepo)
 	userServ := service.NewUserService(userRepo)
 	widgetCtServ := service.NewWidgetControlService(widgetControlRepo)
@@ -63,6 +64,7 @@ func main() {
 	controlHandler := handler.NewControlHandler(controlServ)
 	displayDataHandler := handler.NewDisplayDataHandler(displayDataServ)
 	displayHandler := handler.NewDisplayHandler(displayServ)
+	layouthandler := handler.NewLayoutHandler(layoutServ)
 	mqttHandler := handler.NewMqttHandler(mqttServ)
 	userHandler := handler.NewUserHandler(userServ)
 	widgetCtHandler := handler.NewWidgetControlHandler(widgetCtServ)
@@ -123,6 +125,9 @@ func main() {
 	displayGroup.GET("", displayHandler.FindDisplays)
 	displayGroup.PUT("/:displayId", graudRole.CanWrite, displayHandler.Update)
 	displayGroup.DELETE("/:displayId", graudRole.CanWrite, displayHandler.Delete)
+
+	layoutGroup := r.Group("boxes/:boxId", jwtWare.JWTWare, graudRole.CanWrite)
+	layoutGroup.PUT("/layout", layouthandler.Update)
 
 	mqttGroup := r.Group("mqtt")
 	mqttGroup.POST("/auth", mqttHandler.Auth)

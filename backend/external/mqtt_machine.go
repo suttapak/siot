@@ -137,5 +137,8 @@ func (m *mqttMachine) xTopic(msg mqtt.Message) (topic, key string) {
 }
 
 func compareTime(now time.Time, c []model.Control, data float64) bool {
+	if len(c[0].ControlData) <= 0 {
+		return false
+	}
 	return !now.After(c[0].ControlData[len(c[0].ControlData)-1].CreatedAt.Add(1*time.Second)) && c[0].ControlData[len(c[0].ControlData)-1].Data == data
 }
