@@ -1,4 +1,5 @@
 import { Layout } from 'react-grid-layout';
+import { Layout as LayoutType } from '../types/Layout';
 import { getUserToken } from '../libs';
 import { apiClient } from './Api';
 
@@ -27,9 +28,10 @@ export const ParseLayoutDto = (layout: Layout[]) => {
 };
 
 export const UpdateLayoutDeliver = async (boxId: string, body: UpdateLayoutDto[]) => {
-  const res = await apiClient.put(`/boxes/${boxId}/layout`, JSON.stringify(body), {
+  const res = await apiClient.put<LayoutType>(`/boxes/${boxId}/layout`, JSON.stringify(body), {
     headers: {
       Authorization: `Bearer ${getUserToken()}`,
     },
   });
+  return res.data;
 };
