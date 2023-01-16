@@ -29,5 +29,5 @@ func (h *canSubHandler) CanSub(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(handleError(err))
 		return
 	}
-	ctx.JSON(http.StatusOK, res)
+	ctx.String(http.StatusOK, res.CanSub)
 }
