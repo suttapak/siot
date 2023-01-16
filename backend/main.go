@@ -80,6 +80,10 @@ func main() {
 	// core
 
 	r.Use(GinMiddleware("http://localhost:3000"))
+	// root path return ok
+	r.GET("", func(ctx *gin.Context) {
+		ctx.String(200, "OK")
+	})
 
 	// addmin
 	addminGroup := r.Group("admin", jwtWare.JWTWare)
