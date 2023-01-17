@@ -116,6 +116,10 @@ func (s *displayService) FindDisplay(ctx context.Context, req *FindDisplaysReque
 	}
 
 	res, err = utils.Recast[[]DisplayResponse](displays)
+	if err != nil {
+		logs.Error(err)
+		return nil, errs.ErrInternalServerError
+	}
 
 	return res, err
 }

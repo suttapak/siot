@@ -3,6 +3,7 @@ package external
 import (
 	"context"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -51,9 +52,18 @@ func (m *mqttMachine) MQTTMachine() {
 	ctx := context.Background()
 	t := m.client.Subscribe("#", 0, func(c mqtt.Client, msg mqtt.Message) {
 
-		str := string(msg.Payload())
-		data, err := strconv.ParseFloat(str, 64)
-		if err != nil {
+		s := string(msg.Payload())
+		s = strings.TrimSpace(s)
+		if s == "" {
+			fmt.Println("Error: message payload is empty or only whitespace")
+			return
+		}
+		// Try to convert the string to a float64
+		data, err := strconv.ParseFloat(s, 64)
+
+		if err != nil || math.IsNaN(data) {
+			// Handle error if the message payload is not a number
+			fmt.Println("Error: message payload is not a number")
 			return
 		}
 
