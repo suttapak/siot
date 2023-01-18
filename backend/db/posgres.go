@@ -48,6 +48,7 @@ func GetPostgresInstance(cfg *config.Configs, migrate bool) *gorm.DB {
 		&model.WidgetDisplay{},
 		&model.Display{},
 		&model.DisplayData{},
+		&model.UserOnline{},
 	) != nil {
 		panic("Error when run migrations")
 	}

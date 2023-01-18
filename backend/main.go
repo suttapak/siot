@@ -14,6 +14,7 @@ import (
 	"github.com/suttapak/siot-backend/middleware"
 	"github.com/suttapak/siot-backend/repository"
 	"github.com/suttapak/siot-backend/service"
+	"github.com/suttapak/siot-backend/utils/logs"
 )
 
 func main() {
@@ -34,6 +35,7 @@ func main() {
 	displayDataRepo := repository.NewDisplayDataRepositoryDb(conn)
 	layoutRepo := repository.NewLayoutRepository(conn)
 	userRepo := repository.NewUserRepositoryDB(conn)
+	userOnlineRepo := repository.NewUserOnlineRepository(conn)
 	settingRepo := repository.NewSettingRepository(conn)
 	widgetControlRepo := repository.NewWidgetControlRepository(conn)
 	widgetDisplayRepo := repository.NewWidgetDisplayRepository(conn)
@@ -51,6 +53,7 @@ func main() {
 	layoutServ := service.NewLayoutService(layoutRepo)
 	mqttServ := service.NewMqttAuthService(boxRepo, canSubRepo, canPubRepo, userRepo)
 	userServ := service.NewUserService(userRepo)
+	userOnlineServ := service.NewUserOnlineService(userOnlineRepo)
 	widgetCtServ := service.NewWidgetControlService(widgetControlRepo)
 	widgetDpServ := service.NewWidgetDisplayService(widgetDisplayRepo)
 
@@ -165,24 +168,19 @@ func main() {
 	mqtt := external.NewMqttClient(conf)
 	server := socketio.NewServer(nil)
 	wsServ := service.NewWsService(mqtt, boxRepo, controlRepo, displayRepo)
-	wsHandler := handler.NewWsHandler(wsServ, server)
+	wsHandler := handler.NewWsHandler(wsServ, server, userOnlineServ)
 	mqttMachine := external.NewMQTTMachine(mqtt, server, canSubRepo, controlRepo, controlDataRepo, displayRepo, displayDataRepo)
 	go mqttMachine.MQTTMachine()
 
-	server.OnConnect("/", func(s socketio.Conn) error {
-		s.SetContext("")
-		return nil
-	})
+	server.OnConnect("/", wsHandler.OnConnect)
 
 	server.OnEvent("", "subscript", wsHandler.Subscript)
 	server.OnEvent("", "publish", wsHandler.Publish)
+	server.OnEvent("", "userOnline", wsHandler.UserOnline)
 	server.OnError("/", func(s socketio.Conn, e error) {
-		log.Println("meet error:", e)
+		logs.Info("meet error : " + e.Error())
 	})
-
-	server.OnDisconnect("/", func(s socketio.Conn, reason string) {
-		log.Println("closed", reason)
-	})
+	server.OnDisconnect("/", wsHandler.OnDisconnect)
 	go func() {
 		if err := server.Serve(); err != nil {
 			log.Fatalf("socketio listen error: %s\n", err)

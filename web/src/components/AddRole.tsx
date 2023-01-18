@@ -10,6 +10,7 @@ const AddRole = (props: Props) => {
       <Paper
         elevation={0}
         sx={{
+          height: 360,
           marginTop: 2,
         }}
       >
