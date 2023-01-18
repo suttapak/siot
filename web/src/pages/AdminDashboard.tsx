@@ -4,6 +4,7 @@ import UserTable from '../components/UserTable';
 import AddRole from '../components/AddRole';
 import Grid from '@mui/material/Grid';
 import { useAuth } from '../hooks';
+import UserOnline from '../components/UserOnline';
 
 type Props = {};
 
@@ -21,12 +22,15 @@ const AdminDashboard = (props: Props) => {
         {user && (
           <>
             {user.roles.find((v) => v.name.toLowerCase() === 'superadmin') && (
-              <Grid item xs={6}>
+              <Grid item xs={6} height={360}>
                 <AddRole />
               </Grid>
             )}
           </>
         )}
+        <Grid item xs={6} height={360}>
+          <UserOnline />
+        </Grid>
       </Grid>
     </Container>
   );

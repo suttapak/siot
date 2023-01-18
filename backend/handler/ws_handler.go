@@ -6,17 +6,18 @@ import (
 
 	socketio "github.com/googollee/go-socket.io"
 	"github.com/suttapak/siot-backend/service"
+	"github.com/suttapak/siot-backend/utils/errs"
 	"github.com/suttapak/siot-backend/utils/logs"
 )
 
 type websocketHandler struct {
-	// chan service <-
-	wsServ service.WsService
-	socket *socketio.Server
+	wsServ         service.WsService
+	socket         *socketio.Server
+	userOnlineServ service.UserOnlineService
 }
 
-func NewWsHandler(wsServ service.WsService, socket *socketio.Server) *websocketHandler {
-	return &websocketHandler{wsServ, socket}
+func NewWsHandler(wsServ service.WsService, socket *socketio.Server, userOnlineServ service.UserOnlineService) *websocketHandler {
+	return &websocketHandler{wsServ, socket, userOnlineServ}
 }
 
 func (h *websocketHandler) Subscript(s socketio.Conn, msg any) {
@@ -53,4 +54,42 @@ func (h *websocketHandler) Publish(s socketio.Conn, msg interface{}) {
 	}
 	h.wsServ.RunPub(ctx, body)
 
+}
+
+func (h *websocketHandler) UserOnline(s socketio.Conn, msg interface{}) {
+	s.Join("userOnline")
+	ctx := context.Background()
+	_, err := h.userOnlineServ.Increment(ctx)
+	if err != nil {
+		s.Close()
+	}
+	res, err := h.userOnlineServ.Decrement(ctx)
+	if err != nil {
+		s.Close()
+		return
+	}
+	h.socket.BroadcastToRoom("", "userOnline", "userOnline", res)
+}
+
+func (h *websocketHandler) OnConnect(s socketio.Conn) error {
+	logs.Info("User connect : " + s.ID())
+	ctx := context.Background()
+	res, err := h.userOnlineServ.Increment(ctx)
+	if err != nil {
+		s.Close()
+		return errs.ErrInternalServerError
+	}
+	h.socket.BroadcastToRoom("", "userOnline", "userOnline", res)
+	return nil
+}
+
+func (h *websocketHandler) OnDisconnect(s socketio.Conn, reason string) {
+	logs.Info("Socket disconnect : " + reason)
+	ctx := context.Background()
+	res, err := h.userOnlineServ.Decrement(ctx)
+	if err != nil {
+		s.Close()
+		return
+	}
+	h.socket.BroadcastToRoom("", "userOnline", "userOnline", res)
 }
