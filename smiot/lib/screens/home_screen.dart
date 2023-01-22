@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.grey[800],
               )),
           title: Text(
-            'SMIOT',
+            'METEE KLOUD',
             style:
                 TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold),
           ),

@@ -155,8 +155,8 @@ class _NumberButtonState extends State<NumberButton> {
     );
   }
 
-  Widget buildForm() => SizedBox(
-      width: 200,
+  Widget buildForm() => Expanded(
+      flex: 1,
       child: TextField(
         textAlign: TextAlign.center,
         style: const TextStyle(fontSize: 22),

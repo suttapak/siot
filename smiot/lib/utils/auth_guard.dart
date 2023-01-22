@@ -32,7 +32,7 @@ class _AuthGuardState extends State<AuthGuard> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      title: 'SIOT',
+      title: 'MATEE KLOUD',
       builder: (context, child) {
         return BlocListener<AuthBloc, MyState>(
           listener: ((context, state) {
