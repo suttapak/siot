@@ -51,15 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   context
                       .read<AuthBloc>()
                       .add(LoginEvet(email: email, password: password));
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text("กำลังเข้าสู่ระบบ..."),
-                    action: SnackBarAction(
-                      label: '',
-                      onPressed: () {
-                        // Some code to undo the change.
-                      },
-                    ),
-                  ));
                 }),
                 child: BlocConsumer<AuthBloc, MyState>(
                   builder: ((context, state) {
@@ -87,18 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                       return;
                     }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.red.shade400,
-                        content: Text(state.toString()),
-                        action: SnackBarAction(
-                          label: '',
-                          onPressed: () {
-                            // Some code to undo the change.
-                          },
-                        ),
-                      ),
-                    );
                   },
                 ),
               ),
