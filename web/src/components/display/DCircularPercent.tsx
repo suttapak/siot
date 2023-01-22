@@ -88,8 +88,8 @@ const DCircularPercent = (props: Props) => {
       <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
 
       <CircularProgressbar
-        value={state.length > 0 ? state[state.length - 1].data % 100 : 0}
-        text={state.length > 0 ? `${(state[state.length - 1].data % 100).toFixed(2)}%` : 'NULL'}
+        value={state.length > 0 ? state[0].data % 100 : 0}
+        text={state.length > 0 ? `${(state[0].data % 100).toFixed(2)}%` : 'NULL'}
         circleRatio={0.75}
         styles={buildStyles({
           rotation: 1 / 2 + 1 / 8,
