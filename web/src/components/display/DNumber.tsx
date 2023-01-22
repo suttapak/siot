@@ -88,7 +88,7 @@ const DNumber = (props: Props) => {
       <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
 
       <div className={`${props.widgetMode && 'cursor-move'} w-20 h-10 transition-all duration-150 rounded-lg`}>
-        <p className='text-2xl text-center'>{state.length > 0 ? state[state.length - 1].data : 'NULL'}</p>{' '}
+        <p className='text-2xl text-center'>{state.length > 0 ? state[0].data : 'NULL'}</p>{' '}
       </div>
     </div>
   );
