@@ -30,6 +30,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
 import { ParseLayoutDto, UpdateLayoutDeliver } from '../delivery/Layout';
 import { Box, Typography } from '@mui/material';
+import DOnOff from '../components/display/DOnOff';
+import DOnOffSwitch from '../components/display/DOnOffSwitch';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -208,6 +210,10 @@ export function BoxDashBoard() {
                       <DNumber canSub={'' + box?.canSub.canSubscribe} widget={value} />
                     ) : value.widget.name === 'DLineChart' ? (
                       <DLineChart canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'DOnOff' ? (
+                      <DOnOff canSub={'' + box?.canSub.canSubscribe} widget={value} />
+                    ) : value.widget.name === 'DOnOffSwitch' ? (
+                      <DOnOffSwitch canSub={'' + box?.canSub.canSubscribe} widget={value} />
                     ) : (
                       <div className='hidden'></div>
                     )}

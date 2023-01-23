@@ -21,7 +21,7 @@ export function Control(props: Props) {
     <>
       <div className='w-full py-4 flex justify-center items-center flex-col space-y-4 px-2'>
         {data?.map((value) => (
-          <React.Fragment>
+          <React.Fragment key={value.id}>
             {value.name === 'CButton' ? (
               <CButton canSub={canSub} setWidgetId={setWidgetId} widgetMode />
             ) : value.name === 'CButtonNumber' ? (
