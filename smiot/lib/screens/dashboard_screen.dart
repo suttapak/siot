@@ -9,6 +9,7 @@ import 'package:smiot/widgets/circular_percent_display.dart';
 import 'package:smiot/widgets/line_chart_display.dart';
 import 'package:smiot/widgets/number_button.dart';
 import 'package:smiot/widgets/number_display.dart';
+import 'package:smiot/widgets/on_off_display.dart';
 import 'package:smiot/widgets/slider_control.dart';
 import 'package:smiot/widgets/splash.dart';
 import 'package:smiot/widgets/switch.dart';
@@ -126,7 +127,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     display: d,
                                     socket: _socket,
                                   )
-                                : const SizedBox()
+                                : d.widget.name == 'DOnOff'
+                                    ? OnOffDisplay(
+                                        canSub: widget.canSub,
+                                        display: d,
+                                        socket: _socket,
+                                      )
+                                    : d.widget.name == 'DOnOffSwitch'
+                                        ? OnOffDisplay(
+                                            canSub: widget.canSub,
+                                            display: d,
+                                            socket: _socket,
+                                          )
+                                        : const SizedBox()
                 ]);
               }
               if (state is StateLoading) {
