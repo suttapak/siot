@@ -4,6 +4,8 @@ import { getWidgetDisplays } from '../../delivery/WidgetDisplay';
 import DCircularPercent from './DCircularPercent';
 import DLineChart from './DLineChart';
 import DNumber from './DNumber';
+import DOnOff from './DOnOff';
+import DOnOffSwitch from './DOnOffSwitch';
 
 interface Props {
   canSub: string;
@@ -22,17 +24,21 @@ const Display = (props: Props) => {
     <>
       <div className='w-full py-4 flex justify-center items-center flex-col space-y-4 px-2'>
         {data?.map((value) => (
-          <>
+          <React.Fragment key={value.id}>
             {value.name === 'DLineChart' ? (
               <DLineChart canSub={canSub} setWidgetId={setWidgetId} widgetMode />
             ) : value.name === 'DNumber' ? (
               <DNumber canSub={canSub} setWidgetId={setWidgetId} widgetMode />
             ) : value.name === 'DCircularPercent' ? (
               <DCircularPercent canSub={canSub} setWidgetId={setWidgetId} widgetMode />
+            ) : value.name === 'DOnOff' ? (
+              <DOnOff canSub={canSub} setWidgetId={setWidgetId} widgetMode />
+            ) : value.name === 'DOnOffSwitch' ? (
+              <DOnOffSwitch canSub={canSub} setWidgetId={setWidgetId} widgetMode />
             ) : (
               <div className='hidden'></div>
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
     </>

@@ -15,7 +15,7 @@ type Props = {
   setWidgetId?: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const DNumber = (props: Props) => {
+const DOnOffSwitch = (props: Props) => {
   const mock: DataDisplay[] = [
     {
       id: 1,
@@ -34,7 +34,7 @@ const DNumber = (props: Props) => {
   const [open, setOpen] = React.useState(false);
 
   const { isLoading } = useQuery(
-    [widget?.key ? widget?.key : 'displayData'],
+    [widget?.id ? widget?.id : 'displayData'],
     async () => {
       if (!boxId || !widget?.id) {
         return;
@@ -79,19 +79,26 @@ const DNumber = (props: Props) => {
       </div>
     );
   }
+
   return (
     <div
-      onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 2) : null)}
-      className={`${props.widgetMode && 'cursor-move'} relative w-full h-24 shadow rounded-lg flex justify-center items-center `}
+      onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 5) : null)}
+      className={`${props.widgetMode ? 'cursor-move h-24' : 'h-full'} relative w-full shadow rounded-lg flex justify-center items-center `}
       draggable={props.widgetMode}
     >
       <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
 
-      <div className={`${props.widgetMode && 'cursor-move'} w-20 h-10 transition-all duration-150 rounded-lg`}>
-        <p className='text-2xl text-center'>{state.length > 0 ? state[0].data : 'NULL'}</p>{' '}
+      <div
+        className={`${props.widgetMode && 'cursor-move'} mt-6 w-20 h-10 ${
+          state.length > 0 ? (state[state.length - 1].data === 1 ? 'bg-yellow-200' : 'bg-gray-200') : 'bg-gray-200'
+        } transition-all duration-150  rounded-full`}
+      >
+        <div className={`${state.length > 0 ? state[state.length - 1].data === 1 && 'translate-x-full' : ''} w-10 h-10 p-0.5 transition-all`}>
+          <div className={`w-full h-full  bg-white rounded-full`} />
+        </div>
       </div>
     </div>
   );
 };
 
-export default DNumber;
+export default DOnOffSwitch;

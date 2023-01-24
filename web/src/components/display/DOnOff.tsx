@@ -15,7 +15,7 @@ type Props = {
   setWidgetId?: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const DNumber = (props: Props) => {
+const DOnOff = (props: Props) => {
   const mock: DataDisplay[] = [
     {
       id: 1,
@@ -79,19 +79,24 @@ const DNumber = (props: Props) => {
       </div>
     );
   }
+
   return (
     <div
-      onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 2) : null)}
+      onDrag={() => (props.setWidgetId ? props.setWidgetId(props.widget?.id ? props.widget?.id : 4) : null)}
       className={`${props.widgetMode && 'cursor-move'} relative w-full h-24 shadow rounded-lg flex justify-center items-center `}
       draggable={props.widgetMode}
     >
       <NameKeyWidget open={open} setOpen={setOpen} widget={widget} />
 
-      <div className={`${props.widgetMode && 'cursor-move'} w-20 h-10 transition-all duration-150 rounded-lg`}>
-        <p className='text-2xl text-center'>{state.length > 0 ? state[0].data : 'NULL'}</p>{' '}
+      <div
+        className={`${props.widgetMode && 'cursor-move'} flex justify-center items-center mt-6 w-20 h-10 ${
+          state.length > 0 ? (state[state.length - 1].data === 1 ? 'bg-yellow-200' : 'bg-gray-200') : 'bg-gray-200'
+        } transition-all duration-150 rounded-lg`}
+      >
+        {state.length > 0 ? (state[state.length - 1].data === 1 ? 'On' : 'Off') : 'N/A'}
       </div>
     </div>
   );
 };
 
-export default DNumber;
+export default DOnOff;

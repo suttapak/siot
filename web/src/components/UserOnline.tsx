@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Box, Paper, Typography } from '@mui/material';
 import { useSocketIO } from '../hooks/useSocketIO';
 import { UserOnlineType } from '../types/UserOnlineType';
@@ -14,6 +14,7 @@ const UserOnline = (props: Props) => {
 
   React.useEffect(() => {
     client.emit('userOnline');
+    // eslint-disable-next-line
   }, []);
 
   const refWidth = useRef<HTMLDivElement>(null);
