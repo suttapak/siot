@@ -89,8 +89,9 @@ class _NumberDisplayState extends State<NumberDisplay> {
               listener: (context, state) {
                 if (state is GetDisplayDataStateSuccess) {
                   if (state.displayData.isEmpty) return;
-                  if (state.displayData[0].displayId != widget.display.id)
+                  if (state.displayData[0].displayId != widget.display.id) {
                     return;
+                  }
                   setState(() {
                     data = state.displayData;
                     data.sort(((a, b) => a.id.compareTo(b.id)));
