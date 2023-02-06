@@ -11,7 +11,7 @@ class DisplayDatum {
   int id;
   DateTime createdAt;
   DateTime updatedAt;
-  int data;
+  num data;
   String label;
   int displayId;
 

@@ -33,8 +33,8 @@ Future<List<DisplayDatum>> fetchData(String boxId, int displayId) async {
   }
 }
 
-class NumberDisplay extends StatefulWidget {
-  const NumberDisplay({
+class OnOffDisplay extends StatefulWidget {
+  const OnOffDisplay({
     Key? key,
     required this.display,
     required this.socket,
@@ -51,10 +51,10 @@ class NumberDisplay extends StatefulWidget {
   }
 
   @override
-  State<NumberDisplay> createState() => _NumberDisplayState();
+  State<OnOffDisplay> createState() => _OnOffDisplayState();
 }
 
-class _NumberDisplayState extends State<NumberDisplay> {
+class _OnOffDisplayState extends State<OnOffDisplay> {
   late List<DisplayDatum> data;
   late final IO.Socket _socket;
 
@@ -117,7 +117,11 @@ class _NumberDisplayState extends State<NumberDisplay> {
               color: Colors.white,
             ),
             child: Text(
-              '${data.isEmpty ? '0' : data[data.length - 1].data}',
+              data.isEmpty
+                  ? 'N/A'
+                  : data[data.length - 1].data == 1
+                      ? 'On'
+                      : 'Off',
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w500,
