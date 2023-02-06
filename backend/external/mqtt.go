@@ -18,8 +18,15 @@ func NewMqttClient(conf *config.Configs) mqtt.Client {
 		SetPassword(conf.Mqtt.Password)
 	opts.SetClientID(getRandStr())
 	opts.SetCleanSession(true)
+	opts.SetPingTimeout(10 * time.Second)
+	opts.SetKeepAlive(10 * time.Second)
+	opts.SetAutoReconnect(true)
+	opts.SetMaxReconnectInterval(10 * time.Second)
 	opts.SetConnectionLostHandler(func(c mqtt.Client, err error) {
-		panic(err)
+		logs.Error("!!!!!! mqtt connection lost error : " + err.Error())
+	})
+	opts.SetReconnectingHandler(func(c mqtt.Client, options *mqtt.ClientOptions) {
+		logs.Error("...... mqtt reconnecting ......")
 	})
 	client := mqtt.NewClient(opts)
 
