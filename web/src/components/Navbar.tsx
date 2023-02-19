@@ -17,6 +17,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
 
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks';
@@ -140,7 +141,7 @@ export function NavbarComponent({ open, setOpen, children }: NavbarComponentProp
             <ListItemText primary={'Home'} sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </Link>
-        <a href='https://document.rocket-translate.com'>
+        <a href='https://github.com/suttapak/siot.h'>
           <ListItemButton
             sx={{
               minHeight: 48,
@@ -158,6 +159,26 @@ export function NavbarComponent({ open, setOpen, children }: NavbarComponentProp
               <ArticleIcon />
             </ListItemIcon>
             <ListItemText primary={'Document'} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </a>
+        <a href='https://drive.google.com/drive/folders/1Vrv3fSn_0AlFxoNX9EZCgOCvfaJe18_D?usp=share_link'>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <InstallMobileIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Mobile App'} sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </a>
       </List>
